@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>الدفع | منصة تعليم ذكية</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #0a0f1f 0%, #0f172a 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* خلفية متحركة خفيفة */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(250,204,21,0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* أنيميشنات */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* الهيدر */
+        .payment-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease;
+        }
+        .payment-header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fff, #facc15);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .payment-header h1 i {
+            color: #facc15;
+            background: none;
+            font-size: 1.8rem;
+        }
+        .payment-header p {
+            color: #cbd5e1;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        /* البطاقة الرئيسية */
+        .card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(250,204,21,0.25);
+            padding: 28px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease backwards;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            border-color: rgba(250,204,21,0.6);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #facc15;
+            border-right: 4px solid #facc15;
+            padding-right: 15px;
+        }
+        .card-title i {
+            font-size: 1.4rem;
+        }
+
+        /* خطط الاشتراك */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .plan-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 20px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+        }
+        .plan-card.active {
+            border-color: #facc15;
+            background: rgba(250,204,21,0.12);
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px -5px rgba(250,204,21,0.2);
+        }
+        .plan-card:hover {
+            transform: translateY(-5px);
+            background: rgba(250,204,21,0.08);
+        }
+        .plan-icon {
+            font-size: 2.2rem;
+            color: #facc15;
+            margin-bottom: 12px;
+        }
+        .plan-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .plan-price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #facc15;
+        }
+        .plan-desc {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        /* طرق الدفع */
+        .methods-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .method-item {
+            flex: 1;
+            min-width: 110px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 60px;
+            padding: 12px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            font-weight: 600;
+        }
+        .method-item i {
+            font-size: 1.5rem;
+            color: #facc15;
+        }
+        .method-item.active {
+            border-color: #facc15;
+            background: rgba(250,204,21,0.15);
+            transform: scale(1.02);
+        }
+        .method-item:hover {
+            background: rgba(250,204,21,0.1);
+            transform: translateY(-3px);
+        }
+
+        /* ملخص الطلب */
+        .summary-card {
+            background: rgba(0,0,0,0.35);
+            border-radius: 28px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(250,204,21,0.3);
+            font-size: 1rem;
+        }
+        .summary-row.total {
+            border-bottom: none;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #facc15;
+            padding-top: 15px;
+        }
+        .btn-pay {
+            width: 100%;
+            margin-top: 25px;
+            background: linear-gradient(95deg, #facc15, #ffdf5e);
+            border: none;
+            padding: 16px;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            font-family: 'Cairo', sans-serif;
+            color: #0f172a;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(250,204,21,0.3);
+        }
+        .btn-pay:hover {
+            transform: translateY(-3px);
+            background: #ffe066;
+            box-shadow: 0 12px 25px rgba(250,204,21,0.5);
+        }
+
+        /* أزرار رجوع - تم التعديل للربط بـ courses.html */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-bottom: 25px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            color: #facc15;
+            transform: translateX(-5px);
+        }
+
+        /* أيقونات عائمة */
+        .floating-icon {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2rem;
+            color: rgba(250,204,21,0.2);
+            pointer-events: none;
+            animation: spinSlow 20s linear infinite;
+            z-index: 0;
+        }
+        .floating-icon-right {
+            right: 20px;
+            left: auto;
+            top: 15%;
+            animation-duration: 25s;
+        }
+
+        /* تجاوب كامل */
+        @media (max-width: 700px) {
+            body {
+                padding: 25px 15px;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card-title {
+                font-size: 1.3rem;
+            }
+            .plans-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .methods-grid {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .method-item {
+                justify-content: center;
+            }
+            .btn-pay {
+                font-size: 1rem;
+                padding: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            .payment-header h1 {
+                font-size: 1.6rem;
+            }
+            .plan-title {
+                font-size: 1rem;
+            }
+            .plan-price {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-icon">
+    <i class="fas fa-credit-card"></i>
+</div>
+<div class="floating-icon floating-icon-right">
+    <i class="fas fa-lock"></i>
+</div>
+
+<div class="container">
+    <!-- تم تغيير الرابط إلى courses.html -->
+    <a href="courses.html" class="back-link"><i class="fas fa-arrow-right"></i> العودة للكورسات</a>
+
+    <div class="payment-header">
+        <h1><i class="fas fa-wallet"></i> الدفع الآن</h1>
+        <p>اختر الباقة المناسبة ووسيلة الدفع لتأكيد اشتراكك</p>
+    </div>
+
+    <!-- بطاقة الدفع الوحيدة (تم حذف تفاصيل الكورس) -->
+    <div class="card" style="animation-delay: 0.1s;">
+        <div class="card-title">
+            <i class="fas fa-boxes"></i>
+            <span>اختر خطتك</span>
+        </div>
+        <div class="plans-grid" id="plansContainer"></div>
+
+        <div class="card-title" style="margin-top: 20px;">
+            <i class="fas fa-money-bill-wave"></i>
+            <span>وسيلة الدفع</span>
+        </div>
+        <div class="methods-grid" id="methodsContainer"></div>
+
+        <div class="summary-card">
+            <div style="font-weight: 700; margin-bottom: 12px;"><i class="fas fa-receipt"></i> ملخص الطلب</div>
+            <div class="summary-row">
+                <span>الخطة المختارة:</span>
+                <span id="summaryPlan">—</span>
+            </div>
+            <div class="summary-row">
+                <span>طريقة الدفع:</span>
+                <span id="summaryMethod">—</span>
+            </div>
+            <div class="summary-row total">
+                <span>المبلغ الإجمالي:</span>
+                <span id="summaryPrice">0 ج.م</span>
+            </div>
+        </div>
+
+        <button class="btn-pay" id="confirmPayBtn">
+            <i class="fas fa-credit-card"></i> الدفع الآن
+        </button>
+    </div>
+</div>
+
+<script>
+    // جلب اسم الكورس من رابط الصفحة (اختياري)
+    const urlParams = new URLSearchParams(window.location.search);
+    let courseName = urlParams.get('course') || "الكورس المختار";
+    
+    // خطط الاشتراك
+    const plans = [
+        { id: 'lesson', name: 'درس / درسين', price: 20, icon: 'fas fa-chalkboard', desc: 'وصول لمدة يومين' },
+        { id: '10days', name: '10 أيام', price: 50, icon: 'fas fa-calendar-week', desc: 'وصول كامل 10 أيام' },
+        { id: 'month', name: 'شهر كامل', price: 120, icon: 'fas fa-calendar-alt', desc: 'أفضل قيمة' }
+    ];
+
+    // طرق الدفع
+    const methods = [
+        { id: 'vodafone', name: 'Vodafone Cash', icon: 'fas fa-mobile-alt' },
+        { id: 'fawry', name: 'Fawry', icon: 'fas fa-receipt' },
+        { id: 'instapay', name: 'InstaPay', icon: 'fas fa-university' },
+        { id: 'paypal', name: 'PayPal', icon: 'fab fa-paypal' }
+    ];
+
+    let selectedPlan = null;
+    let selectedMethod = null;
+
+    // عرض الخطط
+    const plansContainer = document.getElementById('plansContainer');
+    plans.forEach(plan => {
+        const planDiv = document.createElement('div');
+        planDiv.className = 'plan-card';
+        planDiv.setAttribute('data-plan-id', plan.id);
+        planDiv.innerHTML = `
+            <div class="plan-icon"><i class="${plan.icon}"></i></div>
+            <div class="plan-title">${plan.name}</div>
+            <div class="plan-price">${plan.price} ج.م</div>
+            <div class="plan-desc">${plan.desc}</div>
+        `;
+        planDiv.addEventListener('click', () => {
+            document.querySelectorAll('.plan-card').forEach(card => card.classList.remove('active'));
+            planDiv.classList.add('active');
+            selectedPlan = plan;
+            updateSummary();
+        });
+        plansContainer.appendChild(planDiv);
+    });
+
+    // عرض طرق الدفع
+    const methodsContainer = document.getElementById('methodsContainer');
+    methods.forEach(method => {
+        const methodDiv = document.createElement('div');
+        methodDiv.className = 'method-item';
+        methodDiv.setAttribute('data-method-id', method.id);
+        methodDiv.innerHTML = `
+            <i class="${method.icon}"></i>
+            <span>${method.name}</span>
+        `;
+        methodDiv.addEventListener('click', () => {
+            document.querySelectorAll('.method-item').forEach(m => m.classList.remove('active'));
+            methodDiv.classList.add('active');
+            selectedMethod = method;
+            updateSummary();
+        });
+        methodsContainer.appendChild(methodDiv);
+    });
+
+    // تحديث الملخص
+    function updateSummary() {
+        const summaryPlanSpan = document.getElementById('summaryPlan');
+        const summaryMethodSpan = document.getElementById('summaryMethod');
+        const summaryPriceSpan = document.getElementById('summaryPrice');
+        
+        if (selectedPlan) {
+            summaryPlanSpan.innerText = `${selectedPlan.name} (${selectedPlan.price} ج.م)`;
+            summaryPriceSpan.innerText = `${selectedPlan.price} ج.م`;
+        } else {
+            summaryPlanSpan.innerText = '—';
+            summaryPriceSpan.innerText = '0 ج.م';
+        }
+        
+        if (selectedMethod) {
+            summaryMethodSpan.innerText = selectedMethod.name;
+        } else {
+            summaryMethodSpan.innerText = '—';
+        }
+    }
+
+    // دالة تأكيد الدفع والتوجيه إلى watch-courses.html
+    function confirmPayment() {
+        if (!selectedPlan) {
+            alert('⚠️ يرجى اختيار خطة الاشتراك أولاً');
+            return;
+        }
+        if (!selectedMethod) {
+            alert('⚠️ يرجى اختيار وسيلة دفع');
+            return;
+        }
+
+        // إنشاء بيانات الاشتراك مع تاريخ الانتهاء
+        const now = new Date();
+        let expireDate = new Date();
+        switch (selectedPlan.id) {
+            case 'lesson':
+                expireDate.setDate(now.getDate() + 2);
+                break;
+            case '10days':
+                expireDate.setDate(now.getDate() + 10);
+                break;
+            case 'month':
+                expireDate.setDate(now.getDate() + 30);
+                break;
+            default:
+                expireDate.setDate(now.getDate() + 2);
+        }
+
+        const subscription = {
+            course: decodeURIComponent(courseName),
+            planId: selectedPlan.id,
+            planName: selectedPlan.name,
+            price: selectedPlan.price,
+            method: selectedMethod.name,
+            methodId: selectedMethod.id,
+            purchaseDate: now.toISOString(),
+            expireDate: expireDate.toISOString(),
+            status: 'active'
+        };
+
+        // حفظ في localStorage
+        localStorage.setItem('activeSubscription', JSON.stringify(subscription));
+        let allSubs = JSON.parse(localStorage.getItem('subscriptionsHistory') || '[]');
+        allSubs.push(subscription);
+        localStorage.setItem('subscriptionsHistory', JSON.stringify(allSubs));
+
+        // رسالة نجاح (اختيارية) ثم توجيه إلى watch-courses.html
+        alert(`✅ تم الدفع بنجاح!\nتم الاشتراك في ${subscription.planName}\nوسيلة الدفع: ${subscription.method}\nالمبلغ: ${subscription.price} ج.م\nتاريخ الانتهاء: ${expireDate.toLocaleDateString('ar-EG')}`);
+        
+        // التوجيه إلى صفحة مشاهدة الكورسات
+        window.location.href = "watch-courses.html";
+    }
+
+    // ربط زر الدفع
+    document.getElementById('confirmPayBtn').addEventListener('click', confirmPayment);
+
+    // تفعيل أول خيار افتراضي
+    const firstPlan = document.querySelector('.plan-card');
+    if (firstPlan) firstPlan.click();
+    const firstMethod = document.querySelector('.method-item');
+    if (firstMethod) firstMethod.click();
+
+    // تأثيرات إضافية
+    const style = document.createElement('style');
+    style.textContent = `
+        .plan-card, .method-item {
+            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .plan-card.active .plan-price {
+            text-shadow: 0 0 5px rgba(250,204,21,0.5);
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>تسجيل حساب | منصة تعليم ذكية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: radial-gradient(circle at 10% 30%, #0a0f2a, #030617);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* animated background particles */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(250, 204, 21, 0.08) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+      animation: subtleMove 20s linear infinite;
+    }
+
+    @keyframes subtleMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 40px; }
+    }
+
+    /* main card */
+    .glass-card {
+      width: 100%;
+      max-width: 580px;
+      background: rgba(15, 25, 45, 0.7);
+      backdrop-filter: blur(14px);
+      border-radius: 2rem;
+      border: 1px solid rgba(250, 204, 21, 0.3);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(250, 204, 21, 0.15);
+      padding: 2rem 2rem;
+      transition: transform 0.3s ease, box-shadow 0.4s;
+      animation: floatUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      z-index: 2;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .glass-card:hover {
+      box-shadow: 0 35px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(250, 204, 21, 0.4);
+      transform: translateY(-3px);
+    }
+
+    h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      text-align: center;
+      background: linear-gradient(135deg, #FFE6A3, #FACC15);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    h2 i {
+      background: none;
+      color: #facc15;
+      font-size: 2rem;
+    }
+
+    .sub {
+      text-align: center;
+      color: #a0b3d9;
+      font-size: 0.85rem;
+      margin-bottom: 1.8rem;
+      border-bottom: 1px dashed rgba(250, 204, 21, 0.3);
+      display: inline-block;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 6px;
+    }
+
+    /* inputs group */
+    .input-group {
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #facc15;
+      font-size: 1.1rem;
+      pointer-events: none;
+      transition: 0.2s;
+      z-index: 1;
+    }
+
+    .input,
+    .select-role {
+      width: 100%;
+      padding: 14px 45px 14px 18px;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      background: rgba(10, 20, 35, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.2rem;
+      outline: none;
+      color: #fff;
+      transition: all 0.25s ease;
+      font-weight: 500;
+    }
+
+    .select-role {
+      padding: 14px 18px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23facc15' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+      background-repeat: no-repeat;
+      background-position: left 18px center;
+      background-size: 16px;
+    }
+
+    .input:focus,
+    .select-role:focus {
+      border-color: #facc15;
+      background: rgba(10, 20, 35, 0.95);
+      box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+      transform: scale(1.01);
+    }
+
+    .input::placeholder {
+      color: #9aaec7;
+      font-weight: 400;
+    }
+
+    /* dynamic fields animation */
+    .dynamic-fields-wrapper {
+      margin: 0.5rem 0 0.8rem;
+    }
+
+    .dynamic-card {
+      background: rgba(250, 204, 21, 0.05);
+      border-radius: 1.2rem;
+      padding: 0.3rem 0;
+      transition: all 0.3s;
+      animation: slideReveal 0.35s ease-out;
+    }
+
+    @keyframes slideReveal {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dynamic-card label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #facc15;
+      margin-right: 8px;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    /* btn modern */
+    .btn-glow {
+      width: 100%;
+      background: linear-gradient(95deg, #facc15, #ffdf6e);
+      border: none;
+      padding: 14px;
+      border-radius: 2rem;
+      font-weight: 800;
+      font-size: 1.1rem;
+      font-family: 'Cairo', sans-serif;
+      color: #0a0f2a;
+      cursor: pointer;
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+      box-shadow: 0 8px 20px rgba(250, 204, 21, 0.2);
+    }
+
+    .btn-glow:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background: linear-gradient(95deg, #ffe069, #facc15);
+      box-shadow: 0 15px 25px rgba(250, 204, 21, 0.4);
+    }
+
+    .btn-glow:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn-glow:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* loader */
+    .loader-modern {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 16px;
+      border-radius: 60px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .loader-modern span {
+      width: 8px;
+      height: 8px;
+      background: #facc15;
+      border-radius: 50%;
+      display: inline-block;
+      animation: wave 1.2s infinite ease-in-out both;
+    }
+
+    .loader-modern span:nth-child(1) { animation-delay: -0.32s; }
+    .loader-modern span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes wave {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .msg-area {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 40px;
+      transition: all 0.2s;
+      word-break: break-word;
+    }
+
+    .link {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.85rem;
+      color: #b9c7e3;
+    }
+
+    .link a {
+      color: #facc15;
+      text-decoration: none;
+      font-weight: 700;
+      transition: 0.2s;
+      border-bottom: 1px dashed transparent;
+    }
+
+    .link a:hover {
+      border-bottom-color: #facc15;
+    }
+
+    /* RESPONSIVE TWEAKS: fully adaptive on all devices */
+    @media (max-width: 640px) {
+      .glass-card {
+        padding: 1.5rem 1.2rem;
+        max-width: 95%;
+      }
+      h2 {
+        font-size: 1.6rem;
+        gap: 8px;
+      }
+      h2 i {
+        font-size: 1.7rem;
+      }
+      .input, .select-role {
+        padding: 12px 40px 12px 14px;
+        font-size: 0.95rem;
+      }
+      .btn-glow {
+        padding: 12px;
+        font-size: 1rem;
+      }
+      .sub {
+        font-size: 0.8rem;
+        margin-bottom: 1.4rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0.75rem;
+      }
+      .glass-card {
+        padding: 1.2rem 1rem;
+        border-radius: 1.5rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+      }
+      h2 i {
+        font-size: 1.5rem;
+      }
+      .input-group i {
+        right: 12px;
+        font-size: 0.95rem;
+      }
+      .input, .select-role {
+        padding: 10px 38px 10px 12px;
+        font-size: 0.9rem;
+        border-radius: 1rem;
+      }
+      .select-role {
+        background-position: left 12px center;
+        background-size: 14px;
+      }
+      .btn-glow {
+        padding: 10px;
+        font-size: 0.95rem;
+        gap: 6px;
+      }
+      .dynamic-card label {
+        font-size: 0.75rem;
+      }
+      .msg-area {
+        font-size: 0.8rem;
+      }
+      .link {
+        font-size: 0.75rem;
+        margin-top: 18px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .glass-card {
+        padding: 1rem 0.9rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+      }
+      .input, .select-role {
+        padding: 9px 35px 9px 10px;
+      }
+    }
+
+    /* small adjustments for landscape */
+    @media (max-height: 600px) and (orientation: landscape) {
+      body {
+        padding: 0.5rem;
+      }
+      .glass-card {
+        padding: 1rem 1.2rem;
+      }
+      .input-group {
+        margin-bottom: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="glass-card">
+  <h2>
+    <i class="fas fa-graduation-cap"></i> حساب جديد
+  </h2>
+  <div style="text-align: center;">
+    <span class="sub">انضم إلى مجتمع التعلم الذكي</span>
+  </div>
+
+  <!-- role selection -->
+  <div class="input-group">
+    <i class="fas fa-user-tag"></i>
+    <select id="roleSelect" class="select-role">
+      <option value="student">🧑‍🎓 طالب / طالبة</option>
+      <option value="instructor">🧑‍🏫 مدرس / معلم</option>
+      <option value="parent">👪 ولي أمر</option>
+    </select>
+  </div>
+
+  <!-- common fields -->
+  <div class="input-group">
+    <i class="fas fa-user"></i>
+    <input type="text" id="fullName" class="input" placeholder="الاسم الكامل" autocomplete="off">
+  </div>
+  <div class="input-group">
+    <i class="fas fa-envelope"></i>
+    <input type="text" id="contactField" class="input" placeholder="البريد الإلكتروني أو رقم الهاتف" autocomplete="off">
+  </div>
+  <div class="input-group">
+    <i class="fas fa-lock"></i>
+    <input type="password" id="password" class="input" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="off">
+  </div>
+
+  <!-- dynamic extra fields (student/instructor/parent) -->
+  <div id="extraFieldsContainer" class="dynamic-fields-wrapper"></div>
+
+  <button class="btn-glow" id="registerBtn">
+    <i class="fas fa-arrow-left"></i> إنشاء الحساب <i class="fas fa-sparkles"></i>
+  </button>
+  <div class="loader-modern" id="loaderModern">
+    <span></span><span></span><span></span>
+    <span style="color:#facc15; margin-right:6px;">جاري التسجيل...</span>
+  </div>
+  <div class="msg-area" id="msg"></div>
+  <div class="link">
+    <i class="fas fa-sign-in-alt"></i> لديك حساب بالفعل؟
+    <a href="login.html">تسجيل الدخول</a>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const roleSelect = document.getElementById('roleSelect');
+    const extraContainer = document.getElementById('extraFieldsContainer');
+    const contactInput = document.getElementById('contactField');
+    const fullNameInput = document.getElementById('fullName');
+    const passwordInput = document.getElementById('password');
+    const loaderDiv = document.getElementById('loaderModern');
+    const msgDiv = document.getElementById('msg');
+    const registerBtn = document.getElementById('registerBtn');
+
+    // Helper: normalize contact for case-insensitive comparison (emails / phones)
+    const normalizeContact = (contact) => contact.trim().toLowerCase();
+
+    // check existence (case-insensitive)
+    function isContactExists(contactValue) {
+      const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+      const normalizedInput = normalizeContact(contactValue);
+      return users.some(user => normalizeContact(user.contact) === normalizedInput);
+    }
+
+    // show toast-like message
+    function showMessage(text, isError = true) {
+      msgDiv.innerHTML = isError ? `<i class="fas fa-exclamation-triangle"></i> ${text}` : `<i class="fas fa-check-circle"></i> ${text}`;
+      msgDiv.style.color = isError ? '#ffcf9a' : '#c8f0d1';
+      msgDiv.style.background = isError ? 'rgba(255, 100, 70, 0.12)' : 'rgba(100, 255, 140, 0.12)';
+      msgDiv.style.border = isError ? '1px solid rgba(255,180,70,0.3)' : '1px solid rgba(100,255,140,0.3)';
+      // auto clear after 3.5s for non-success? but keep success longer
+      setTimeout(() => {
+        if (msgDiv.innerHTML.includes(text)) {
+          if (!isError) return; // keep success until redirect
+          if (msgDiv.innerHTML.includes(text)) msgDiv.style.opacity = '0.8';
+        }
+      }, 3500);
+    }
+
+    function clearMessage() {
+      msgDiv.innerHTML = '';
+      msgDiv.style.background = 'transparent';
+      msgDiv.style.border = 'none';
+    }
+
+    // dynamic fields based on role
+    function updateDynamicFields() {
+      const role = roleSelect.value;
+
+      // update contact placeholder based on role guidance
+      if (role === 'instructor') {
+        contactInput.placeholder = "📧 البريد الإلكتروني (مثال: professor@school.com)";
+      } else if (role === 'student') {
+        contactInput.placeholder = "📱 البريد الإلكتروني أو رقم الهاتف";
+      } else {
+        contactInput.placeholder = "📞 البريد الإلكتروني أو رقم الهاتف";
+      }
+
+      let extraHtml = '';
+      if (role === 'student') {
+        extraHtml = `
+          <div class="dynamic-card">
+            <label><i class="fas fa-book-open"></i> الصف الدراسي</label>
+            <div class="input-group" style="margin-bottom:0;">
+              <i class="fas fa-chalkboard-user"></i>
+              <input type="text" id="gradeField" class="input" placeholder="مثال: 3 ابتدائي، 2 متوسط، 1 ثانوي" autocomplete="off">
+            </div>
+          </div>
+        `;
+      } else if (role === 'instructor') {
+        extraHtml = `
+          <div class="dynamic-card">
+            <label><i class="fas fa-microphone-alt"></i> المادة التي يشرحها</label>
+            <div class="input-group" style="margin-bottom:0;">
+              <i class="fas fa-flask"></i>
+              <input type="text" id="subjectField" class="input" placeholder="مثال: رياضيات، فيزياء، لغة عربية" autocomplete="off">
+            </div>
+          </div>
+        `;
+      } else if (role === 'parent') {
+        extraHtml = `
+          <div class="dynamic-card">
+            <label><i class="fas fa-child"></i> اسم الطالب المرتبط به (الابن / الابنة)</label>
+            <div class="input-group" style="margin-bottom:0;">
+              <i class="fas fa-user-graduate"></i>
+              <input type="text" id="studentNameField" class="input" placeholder="أدخل اسم الطالب كاملاً" autocomplete="off">
+            </div>
+          </div>
+        `;
+      }
+      extraContainer.innerHTML = extraHtml;
+    }
+
+    // Additional role-specific validations (with friendly messages)
+    function validateRoleFields(role) {
+      let extraValue = '';
+      let errorMsg = '';
+      if (role === 'student') {
+        const gradeElem = document.getElementById('gradeField');
+        if (!gradeElem) return { valid: false, error: 'حدث خطأ تقني، أعد تحميل الصفحة' };
+        extraValue = gradeElem.value.trim();
+        if (!extraValue) errorMsg = '❌ الرجاء إدخال الصف الدراسي للطالب';
+        else return { valid: true, data: { grade: extraValue } };
+      } 
+      else if (role === 'instructor') {
+        const subjectElem = document.getElementById('subjectField');
+        if (!subjectElem) return { valid: false, error: 'حدث خطأ تقني' };
+        extraValue = subjectElem.value.trim();
+        if (!extraValue) errorMsg = '❌ الرجاء إدخال المادة التي يشرحها المدرس';
+        else return { valid: true, data: { subject: extraValue } };
+      } 
+      else if (role === 'parent') {
+        const studentElem = document.getElementById('studentNameField');
+        if (!studentElem) return { valid: false, error: 'حدث خطأ تقني' };
+        extraValue = studentElem.value.trim();
+        if (!extraValue) errorMsg = '❌ الرجاء إدخال اسم الطالب المرتبط بولي الأمر';
+        else return { valid: true, data: { linkedStudent: extraValue } };
+      }
+      if (errorMsg) return { valid: false, error: errorMsg };
+      return { valid: true, data: {} };
+    }
+
+    // smart contact validation for instructor (email-like)
+    function isValidContactForRole(contact, role) {
+      if (!contact) return false;
+      if (role === 'instructor') {
+        // basic email pattern suggestion (contains @ and . after @)
+        const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+        if (!emailPattern.test(contact)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // main registration logic
+    function registerUser() {
+      clearMessage();
+      const fullName = fullNameInput.value.trim();
+      let contact = contactInput.value.trim();
+      const password = passwordInput.value;
+      const role = roleSelect.value;
+
+      // basic validation
+      if (!fullName || !contact || !password) {
+        showMessage("❌ جميع الحقول الأساسية مطلوبة (الاسم، البريد/الهاتف، كلمة المرور)");
+        return;
+      }
+      if (password.length < 6) {
+        showMessage("❌ كلمة المرور يجب أن تتكون من 6 أحرف أو أكثر");
+        return;
+      }
+
+      // role-specific contact quality check (instructor must have valid email)
+      if (!isValidContactForRole(contact, role)) {
+        if (role === 'instructor') {
+          showMessage("📧 يرجى إدخال بريد إلكتروني صحيح للمدرس (مثل: name@example.com)");
+        } else {
+          // for student/parent at least not empty
+          if (contact.length < 3) {
+            showMessage("⚠️ يرجى إدخال بريد إلكتروني أو رقم هاتف صحيح (3 محارف على الأقل)");
+            return;
+          }
+        }
+        return;
+      }
+
+      // check uniqueness (case-insensitive)
+      if (isContactExists(contact)) {
+        showMessage("⚠️ هذا البريد أو رقم الهاتف مسجل بالفعل. الرجاء تسجيل الدخول.");
+        return;
+      }
+
+      // dynamic extra fields validation
+      const roleValidation = validateRoleFields(role);
+      if (!roleValidation.valid) {
+        showMessage(roleValidation.error);
+        return;
+      }
+      const extraData = roleValidation.data || {};
+
+      // simulate loading + local storage
+      loaderDiv.style.display = 'flex';
+      registerBtn.disabled = true;
+
+      setTimeout(() => {
+        // create new user object
+        const newUser = {
+          id: Date.now(),
+          fullName: fullName,
+          contact: contact,     // keep original casing
+          password: password,   // in real app would hash
+          role: role,
+          extra: extraData,
+          createdAt: new Date().toISOString()
+        };
+
+        let allUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+        allUsers.push(newUser);
+        localStorage.setItem('registeredUsers', JSON.stringify(allUsers));
+
+        // auto-login session
+        const sessionUser = {
+          id: newUser.id,
+          fullName: newUser.fullName,
+          contact: newUser.contact,
+          role: newUser.role,
+          extra: newUser.extra
+        };
+        localStorage.setItem('currentLoggedUser', JSON.stringify(sessionUser));
+        localStorage.setItem('justRegistered', 'true');
+
+        loaderDiv.style.display = 'none';
+        showMessage("✅ تم إنشاء الحساب بنجاح! جاري توجيهك إلى المنصة الرئيسية...", false);
+
+        // subtle button success feedback
+        registerBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التسجيل! مرحباً بك';
+        setTimeout(() => {
+          window.location.href = "./assets/index.html";
+        }, 1500);
+      }, 1200);
+    }
+
+    // event listeners
+    roleSelect.addEventListener('change', () => {
+      updateDynamicFields();
+      clearMessage();
+    });
+
+    registerBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerUser();
+    });
+
+    // clear message when typing in any main field
+    const mainInputs = [fullNameInput, contactInput, passwordInput];
+    mainInputs.forEach(inp => {
+      inp.addEventListener('input', () => clearMessage());
+    });
+
+    // also when dynamic fields change (delegation)
+    extraContainer.addEventListener('input', (e) => {
+      if (e.target.tagName === 'INPUT') clearMessage();
+    });
+
+    // initial render
+    updateDynamicFields();
+
+    // optional: remove loader on window load (just for any residual)
+    window.addEventListener('load', () => {
+      // small extra touch: preload no side effects
+      document.body.style.animation = 'none';
+    });
+  })();
+</script>
+</body>
+</html>

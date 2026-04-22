@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>مشاهدة الدروس | منصة تعليم ذكية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(145deg, #0a0f1f 0%, #0f172a 100%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 20%, rgba(250,204,21,0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-icons {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-icons i {
+            position: absolute;
+            color: rgba(250, 204, 21, 0.12);
+            font-size: 2.2rem;
+            animation: floatAround 14s infinite ease-in-out;
+        }
+        @keyframes floatAround {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-30px) rotate(12deg); opacity: 0.7; }
+            100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
+        }
+        .floating-icons i:nth-child(1) { top: 12%; left: 5%; animation-duration: 16s; }
+        .floating-icons i:nth-child(2) { top: 25%; right: 8%; animation-duration: 13s; animation-delay: 2s; }
+        .floating-icons i:nth-child(3) { bottom: 20%; left: 12%; font-size: 3rem; animation-duration: 18s; }
+        .floating-icons i:nth-child(4) { bottom: 30%; right: 15%; animation-duration: 15s; animation-delay: 1s; }
+        .floating-icons i:nth-child(5) { top: 60%; left: 40%; font-size: 2.5rem; animation-duration: 20s; }
+        .floating-icons i:nth-child(6) { top: 10%; right: 25%; animation-duration: 12s; }
+        .floating-icons i:nth-child(7) { bottom: 45%; left: 70%; animation-duration: 17s; }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(250, 204, 21, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #facc15;
+        }
+        .logo i { font-size: 1.6rem; }
+        .subscription-badge {
+            background: rgba(250, 204, 21, 0.15);
+            border: 1px solid #facc15;
+            border-radius: 40px;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #facc15;
+        }
+        .back-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            font-weight: 500;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+        .back-link:hover { color: #facc15; transform: translateX(-4px); }
+
+        .hero-section {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-section h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #fff, #facc15);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-section p { color: #94a3b8; margin-top: 10px; font-size: 1rem; }
+        .subscription-info {
+            background: rgba(250, 204, 21, 0.1);
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            font-size: 0.9rem;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 2;
+        }
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            border: 1px solid rgba(250, 204, 21, 0.2);
+        }
+        .lesson-card:hover {
+            transform: translateY(-8px);
+            border-color: #facc15;
+            box-shadow: 0 20px 30px -12px rgba(250, 204, 21, 0.2);
+        }
+        .thumbnail {
+            height: 180px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .thumbnail i { font-size: 3.5rem; color: #facc15; transition: 0.3s; }
+        .lesson-card:hover .thumbnail i { transform: scale(1.1); text-shadow: 0 0 10px #facc15; }
+        .play-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .lesson-card:hover .play-overlay { opacity: 1; }
+        .play-overlay i { font-size: 3rem; color: white; background: rgba(0,0,0,0.6); border-radius: 50%; padding: 12px; }
+        .card-content { padding: 20px; }
+        .card-content h3 { font-size: 1.3rem; margin-bottom: 8px; }
+        .card-content p { color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.5; }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .watch-btn, .details-btn {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .watch-btn {
+            background: #facc15;
+            color: #0f172a;
+        }
+        .watch-btn:hover { background: #ffdf5e; transform: translateY(-2px); }
+        .details-btn {
+            background: rgba(255,255,255,0.1);
+            color: #facc15;
+            border: 1px solid #facc15;
+        }
+        .details-btn:hover { background: rgba(250,204,21,0.2); transform: translateY(-2px); }
+
+        /* مودال الفيديو */
+        .video-modal, .details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-container {
+            width: 90%;
+            max-width: 900px;
+            background: #0f172a;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid #facc15;
+            animation: fadeScale 0.3s ease;
+        }
+        /* مودال صغير للتفاصيل الأساسية */
+        .details-modal .modal-container {
+            max-width: 450px;
+            width: 90%;
+        }
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid rgba(250,204,21,0.3);
+        }
+        .modal-header h3 { font-size: 1.2rem; margin: 0; }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #facc15;
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .close-modal:hover { transform: rotate(90deg); color: #fff; }
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .modal-footer {
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.3);
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+        /* محتوى التفاصيل المبسط */
+        .details-content {
+            padding: 20px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+        }
+        .details-content p {
+            margin-bottom: 12px;
+        }
+        .basic-info {
+            background: rgba(250,204,21,0.1);
+            border-radius: 16px;
+            padding: 10px 15px;
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: space-between;
+        }
+        .basic-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #facc15;
+        }
+        hr {
+            border-color: rgba(250,204,21,0.2);
+            margin: 12px 0;
+        }
+        @media (max-width: 480px) {
+            .basic-info {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .details-modal .modal-container {
+                max-width: 380px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-icons">
+    <i class="fas fa-calculator"></i><i class="fas fa-plus"></i><i class="fas fa-divide"></i>
+    <i class="fas fa-shapes"></i><i class="fas fa-chalkboard-user"></i><i class="fas fa-star"></i><i class="fas fa-brain"></i>
+</div>
+
+<nav class="navbar">
+    <div class="logo"><i class="fas fa-graduation-cap"></i><span>منصة تعليم ذكية</span></div>
+    <div class="subscription-badge" id="subscriptionBadge"><i class="fas fa-check-circle"></i><span>جاري التحميل...</span></div>
+</nav>
+
+<div class="hero-section">
+    <h1><i class="fas fa-play-circle"></i> دروس الرياضيات</h1>
+    <p>شاهد الدروس الحصرية بعد الاشتراك — محتوى تفاعلي وممتع</p>
+    <div class="subscription-info" id="subInfo"><i class="fas fa-id-card"></i><span id="planText">تحميل بيانات الاشتراك...</span></div>
+</div>
+
+<div id="lessonsContainer" class="courses-grid"></div>
+
+<!-- مودال الفيديو -->
+<div id="videoModal" class="video-modal">
+    <div class="modal-container">
+        <div class="modal-header"><h3 id="modalLessonTitle">عنوان الدرس</h3><button class="close-modal" id="closeModalBtn">&times;</button></div>
+        <div class="video-wrapper"><iframe id="videoIframe" src="" allowfullscreen></iframe></div>
+        <div class="modal-footer"><i class="fas fa-info-circle"></i> هذا الفيديو متاح لك ضمن باقة الاشتراك النشط.</div>
+    </div>
+</div>
+
+<!-- مودال تفاصيل الكورس (صغير ومختصر) -->
+<div id="detailsModal" class="details-modal">
+    <div class="modal-container">
+        <div class="modal-header"><h3 id="detailsModalTitle">نبذة عن الكورس</h3><button class="close-modal" id="closeDetailsBtn">&times;</button></div>
+        <div class="details-content" id="detailsContent">
+            <!-- محتوى مختصر -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // بيانات الدروس مع تفاصيل مبسطة (أساسية فقط)
+    const lessonsData = [
+        {
+            id: 1,
+            title: "🧮 الجمع والطرح",
+            shortDesc: "تعلم أساسيات الجمع والطرح مع أمثلة من الحياة اليومية، تمارين تفاعلية.",
+            icon: "fas fa-plus-minus",
+            videoUrl: "https://www.youtube.com/embed/9hH6bMxN8tI",
+            basicInfo: {
+                description: "كورس شامل لأساسيات الجمع والطرح للأطفال والمبتدئين. شرح مبسط وتمارين عملية.",
+                level: "مبتدئ",
+                duration: "3 ساعات"
+            }
+        },
+        {
+            id: 2,
+            title: "📖 جدول الضرب",
+            shortDesc: "حفظ جدول الضرب من 1 إلى 10 بطرق سهلة ومسلية، ألعاب تعليمية.",
+            icon: "fas fa-table",
+            videoUrl: "https://www.youtube.com/embed/5kg4TK9-2fI",
+            basicInfo: {
+                description: "دورة ممتعة لحفظ وفهم جدول الضرب باستخدام الحيل الذهنية والأناشيد.",
+                level: "مبتدئ - متوسط",
+                duration: "2.5 ساعة"
+            }
+        },
+        {
+            id: 3,
+            title: "✖️ القسمة البسيطة",
+            shortDesc: "فهم مفهوم القسمة كتوزيع بالتساوي، حل مسائل تطبيقية.",
+            icon: "fas fa-divide",
+            videoUrl: "https://www.youtube.com/embed/27J2rG5TjGY",
+            basicInfo: {
+                description: "تعلم القسمة من البداية وحتى القسمة الطويلة بطريقة مبسطة وتطبيقات حياتية.",
+                level: "مبتدئ",
+                duration: "2 ساعة"
+            }
+        },
+        {
+            id: 4,
+            title: "📐 الأشكال الهندسية",
+            shortDesc: "التعرف على المربع، المستطيل، المثلث، وخصائص كل شكل.",
+            icon: "fas fa-shapes",
+            videoUrl: "https://www.youtube.com/embed/_n6K4DZvqBw",
+            basicInfo: {
+                description: "جولة شيقة في عالم الأشكال الهندسية ثنائية الأبعاد: خصائصها، محيطها ومساحتها.",
+                level: "مبتدئ إلى متوسط",
+                duration: "2.25 ساعة"
+            }
+        }
+    ];
+
+    // تحميل بيانات الاشتراك من localStorage
+    function loadSubscription() {
+        const subscription = JSON.parse(localStorage.getItem('activeSubscription'));
+        const badgeSpan = document.querySelector('#subscriptionBadge span');
+        const planTextSpan = document.getElementById('planText');
+        if (subscription && subscription.status === 'active') {
+            const expireDate = new Date(subscription.expireDate);
+            const now = new Date();
+            if (expireDate > now) {
+                badgeSpan.innerHTML = `اشتراك نشط · ${subscription.planName}`;
+                planTextSpan.innerHTML = `✅ الباقة: ${subscription.planName} · متاح حتى ${expireDate.toLocaleDateString('ar-EG')}`;
+                return true;
+            } else {
+                badgeSpan.innerHTML = `انتهى الاشتراك`;
+                planTextSpan.innerHTML = `⚠️ انتهت صلاحية الاشتراك · يرجى تجديد الاشتراك لمشاهدة الدروس`;
+                return false;
+            }
+        } else {
+            badgeSpan.innerHTML = `غير مشترك`;
+            planTextSpan.innerHTML = `🔒 لا يوجد اشتراك نشط · يرجى الاشتراك لمشاهدة الدروس`;
+            return false;
+        }
+    }
+
+    function renderLessons(isSubscribed) {
+        const container = document.getElementById('lessonsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        lessonsData.forEach(lesson => {
+            const card = document.createElement('div');
+            card.className = 'lesson-card';
+            card.innerHTML = `
+                <div class="thumbnail">
+                    <i class="${lesson.icon}"></i>
+                    <div class="play-overlay"><i class="fas fa-play-circle"></i></div>
+                </div>
+                <div class="card-content">
+                    <h3>${lesson.title}</h3>
+                    <p>${lesson.shortDesc}</p>
+                    <div class="button-group">
+                        <button class="watch-btn" data-url="${lesson.videoUrl}" data-title="${lesson.title}"><i class="fas fa-eye"></i> مشاهدة الدرس</button>
+                        <button class="details-btn" data-id="${lesson.id}"><i class="fas fa-info-circle"></i> تفاصيل الكورس</button>
+                    </div>
+                </div>
+            `;
+            const watchBtn = card.querySelector('.watch-btn');
+            const detailsBtn = card.querySelector('.details-btn');
+            watchBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!isSubscribed) {
+                    alert('🔒 أنت غير مشترك حالياً. يرجى الاشتراك أولاً لمشاهدة الدروس.\nيمكنك العودة إلى صفحة الكورسات والدفع.');
+                    return;
+                }
+                const url = watchBtn.getAttribute('data-url');
+                const title = watchBtn.getAttribute('data-title');
+                openVideoModal(url, title);
+            });
+            detailsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const lessonId = parseInt(detailsBtn.getAttribute('data-id'));
+                const selectedLesson = lessonsData.find(l => l.id === lessonId);
+                if (selectedLesson) openDetailsModal(selectedLesson);
+            });
+            container.appendChild(card);
+        });
+    }
+
+    function openVideoModal(videoUrl, title) {
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('videoIframe');
+        const modalTitle = document.getElementById('modalLessonTitle');
+        modalTitle.innerText = title;
+        iframe.src = videoUrl;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('videoIframe');
+        if (modal) modal.style.display = 'none';
+        if (iframe) iframe.src = '';
+        document.body.style.overflow = '';
+    }
+
+    // فتح نافذة تفاصيل صغيرة تحتوي فقط على الوصف الأساسي + المستوى + المدة
+    function openDetailsModal(lesson) {
+        const modal = document.getElementById('detailsModal');
+        const titleElem = document.getElementById('detailsModalTitle');
+        const contentDiv = document.getElementById('detailsContent');
+        const info = lesson.basicInfo;
+        // إزالة الرموز الإضافية من العنوان إن وجدت
+        const cleanTitle = lesson.title.replace(/^[\u0600-\u06FF]+\s/, ''); 
+        titleElem.innerText = `📘 ${cleanTitle}`;
+        contentDiv.innerHTML = `
+            <p><i class="fas fa-align-right" style="color:#facc15; margin-left:6px;"></i> ${info.description}</p>
+            <div class="basic-info">
+                <span><i class="fas fa-chart-line"></i> المستوى: ${info.level}</span>
+                <span><i class="fas fa-hourglass-half"></i> المدة: ${info.duration}</span>
+            </div>
+            <hr>
+            <p style="font-size:0.85rem; color:#94a3b8;"><i class="fas fa-graduation-cap"></i> هذا الكورس يقدم محتوى تفاعلياً مع تمارين.</p>
+        `;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailsModal() {
+        const modal = document.getElementById('detailsModal');
+        if (modal) modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('closeModalBtn')?.addEventListener('click', closeVideoModal);
+    document.getElementById('closeDetailsBtn')?.addEventListener('click', closeDetailsModal);
+    window.addEventListener('click', (e) => {
+        const videoModal = document.getElementById('videoModal');
+        const detailsModal = document.getElementById('detailsModal');
+        if (e.target === videoModal) closeVideoModal();
+        if (e.target === detailsModal) closeDetailsModal();
+    });
+
+    // إضافة زر العودة
+    const nav = document.querySelector('.navbar');
+    const backLink = document.createElement('a');
+    backLink.href = 'courses.html';
+    backLink.className = 'back-link';
+    backLink.innerHTML = '<i class="fas fa-arrow-right"></i> العودة للكورسات';
+    nav.appendChild(backLink);
+
+    const isActive = loadSubscription();
+    renderLessons(isActive);
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'activeSubscription') location.reload();
+    });
+</script>
+</body>
+</html>
