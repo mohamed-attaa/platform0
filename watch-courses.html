@@ -34,6 +34,7 @@
             z-index: 0;
         }
 
+        /* أيقونات عائمة - تتحسن للشاشات الصغيرة */
         .floating-icons {
             position: fixed;
             inset: 0;
@@ -44,7 +45,7 @@
         .floating-icons i {
             position: absolute;
             color: rgba(250, 204, 21, 0.12);
-            font-size: 2.2rem;
+            font-size: clamp(1.2rem, 4vw, 2.2rem);
             animation: floatAround 14s infinite ease-in-out;
         }
         @keyframes floatAround {
@@ -52,19 +53,29 @@
             50% { transform: translateY(-30px) rotate(12deg); opacity: 0.7; }
             100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
         }
+        /* تحديد مواقع الأيقونات بشكل نسبي */
         .floating-icons i:nth-child(1) { top: 12%; left: 5%; animation-duration: 16s; }
         .floating-icons i:nth-child(2) { top: 25%; right: 8%; animation-duration: 13s; animation-delay: 2s; }
-        .floating-icons i:nth-child(3) { bottom: 20%; left: 12%; font-size: 3rem; animation-duration: 18s; }
+        .floating-icons i:nth-child(3) { bottom: 20%; left: 12%; animation-duration: 18s; }
         .floating-icons i:nth-child(4) { bottom: 30%; right: 15%; animation-duration: 15s; animation-delay: 1s; }
-        .floating-icons i:nth-child(5) { top: 60%; left: 40%; font-size: 2.5rem; animation-duration: 20s; }
+        .floating-icons i:nth-child(5) { top: 60%; left: 40%; animation-duration: 20s; }
         .floating-icons i:nth-child(6) { top: 10%; right: 25%; animation-duration: 12s; }
         .floating-icons i:nth-child(7) { bottom: 45%; left: 70%; animation-duration: 17s; }
+        /* على الجوال إخفاء بعض الأيقونات لتقليل الزحمة مع الحفاظ على الجمال */
+        @media (max-width: 640px) {
+            .floating-icons i:nth-child(3),
+            .floating-icons i:nth-child(5),
+            .floating-icons i:nth-child(7) { display: none; }
+        }
 
+        /* شريط التنقل – تجاوب كامل */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 15px 20px;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(250, 204, 21, 0.3);
@@ -72,26 +83,43 @@
             top: 0;
             z-index: 10;
         }
+        @media (min-width: 768px) {
+            .navbar {
+                padding: 15px 30px;
+                flex-wrap: nowrap;
+            }
+        }
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.3rem;
+            gap: 8px;
+            font-size: clamp(1rem, 5vw, 1.3rem);
             font-weight: 800;
             color: #facc15;
         }
-        .logo i { font-size: 1.6rem; }
+        .logo i { font-size: 1.4rem; }
+        @media (min-width: 768px) {
+            .logo i { font-size: 1.6rem; }
+        }
         .subscription-badge {
             background: rgba(250, 204, 21, 0.15);
             border: 1px solid #facc15;
             border-radius: 40px;
-            padding: 6px 18px;
-            font-size: 0.85rem;
+            padding: 6px 14px;
+            font-size: 0.8rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: #facc15;
+            white-space: nowrap;
+        }
+        @media (max-width: 550px) {
+            .subscription-badge {
+                white-space: normal;
+                font-size: 0.7rem;
+                padding: 4px 12px;
+            }
         }
         .back-link {
             color: #cbd5e1;
@@ -101,49 +129,89 @@
             gap: 6px;
             transition: 0.2s;
             font-weight: 500;
-            margin-left: auto;
-            margin-right: 20px;
+            font-size: 0.9rem;
+            margin-right: auto;
+        }
+        @media (max-width: 550px) {
+            .back-link {
+                margin-right: 0;
+                font-size: 0.8rem;
+            }
         }
         .back-link:hover { color: #facc15; transform: translateX(-4px); }
 
+        /* قسم الهيرو – مرن */
         .hero-section {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             position: relative;
             z-index: 2;
         }
+        @media (min-width: 768px) {
+            .hero-section {
+                padding: 40px 20px;
+            }
+        }
         .hero-section h1 {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 7vw, 2rem);
             background: linear-gradient(135deg, #fff, #facc15);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        .hero-section p { color: #94a3b8; margin-top: 10px; font-size: 1rem; }
+        .hero-section h1 i {
+            font-size: 0.9em;
+        }
+        .hero-section p { 
+            color: #94a3b8; 
+            margin-top: 10px; 
+            font-size: clamp(0.8rem, 4vw, 1rem); 
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
         .subscription-info {
             background: rgba(250, 204, 21, 0.1);
             border-radius: 60px;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 20px;
+            gap: 10px;
+            padding: 8px 18px;
             margin-top: 20px;
             border: 1px solid rgba(250, 204, 21, 0.4);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+            flex-wrap: wrap;
+            justify-content: center;
+            text-align: center;
         }
 
+        /* شبكة الدروس – تحسين قوي للتجاوب */
         .courses-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
             max-width: 1300px;
             margin: 40px auto;
-            padding: 0 25px;
+            padding: 0 20px;
             position: relative;
             z-index: 2;
+        }
+        @media (min-width: 1024px) {
+            .courses-grid {
+                gap: 30px;
+                padding: 0 25px;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+        @media (min-width: 1600px) {
+            .courses-grid {
+                max-width: 1400px;
+            }
         }
         .lesson-card {
             background: rgba(255, 255, 255, 0.05);
@@ -152,6 +220,9 @@
             overflow: hidden;
             transition: all 0.35s ease;
             border: 1px solid rgba(250, 204, 21, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .lesson-card:hover {
             transform: translateY(-8px);
@@ -159,7 +230,7 @@
             box-shadow: 0 20px 30px -12px rgba(250, 204, 21, 0.2);
         }
         .thumbnail {
-            height: 180px;
+            height: 170px;
             background: linear-gradient(135deg, #1e293b, #0f172a);
             display: flex;
             align-items: center;
@@ -167,7 +238,16 @@
             position: relative;
             overflow: hidden;
         }
-        .thumbnail i { font-size: 3.5rem; color: #facc15; transition: 0.3s; }
+        @media (min-width: 768px) {
+            .thumbnail {
+                height: 180px;
+            }
+        }
+        .thumbnail i { 
+            font-size: clamp(2.2rem, 8vw, 3.5rem); 
+            color: #facc15; 
+            transition: 0.3s; 
+        }
         .lesson-card:hover .thumbnail i { transform: scale(1.1); text-shadow: 0 0 10px #facc15; }
         .play-overlay {
             position: absolute;
@@ -181,28 +261,57 @@
             transition: 0.3s;
         }
         .lesson-card:hover .play-overlay { opacity: 1; }
-        .play-overlay i { font-size: 3rem; color: white; background: rgba(0,0,0,0.6); border-radius: 50%; padding: 12px; }
-        .card-content { padding: 20px; }
-        .card-content h3 { font-size: 1.3rem; margin-bottom: 8px; }
-        .card-content p { color: #cbd5e1; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.5; }
+        .play-overlay i { font-size: 2.5rem; color: white; background: rgba(0,0,0,0.6); border-radius: 50%; padding: 10px; }
+        
+        .card-content { 
+            padding: 18px; 
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 500px) {
+            .card-content {
+                padding: 20px;
+            }
+        }
+        .card-content h3 { 
+            font-size: clamp(1.1rem, 5vw, 1.3rem); 
+            margin-bottom: 8px; 
+            word-break: break-word;
+        }
+        .card-content p { 
+            color: #cbd5e1; 
+            font-size: 0.85rem; 
+            margin-bottom: 15px; 
+            line-height: 1.5;
+            flex-grow: 1;
+        }
         .button-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            margin-top: 8px;
         }
         .watch-btn, .details-btn {
             flex: 1;
             border: none;
-            padding: 10px;
+            padding: 10px 6px;
             border-radius: 40px;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
             transition: 0.3s;
             font-family: 'Cairo', sans-serif;
+            font-size: 0.8rem;
+        }
+        @media (min-width: 400px) {
+            .watch-btn, .details-btn {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
         }
         .watch-btn {
             background: #facc15;
@@ -216,7 +325,7 @@
         }
         .details-btn:hover { background: rgba(250,204,21,0.2); transform: translateY(-2px); }
 
-        /* مودال الفيديو */
+        /* modal الفيديو و التفاصيل – تحسينات التجاوب */
         .video-modal, .details-modal {
             display: none;
             position: fixed;
@@ -229,20 +338,21 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            padding: 16px;
         }
         .modal-container {
-            width: 90%;
+            width: 100%;
             max-width: 900px;
             background: #0f172a;
             border-radius: 32px;
             overflow: hidden;
             border: 1px solid #facc15;
             animation: fadeScale 0.3s ease;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.5);
         }
-        /* مودال صغير للتفاصيل الأساسية */
         .details-modal .modal-container {
-            max-width: 450px;
-            width: 90%;
+            max-width: 480px;
+            width: 100%;
         }
         @keyframes fadeScale {
             from { opacity: 0; transform: scale(0.95); }
@@ -252,19 +362,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
+            padding: 14px 18px;
             background: rgba(0,0,0,0.5);
             border-bottom: 1px solid rgba(250,204,21,0.3);
+            gap: 10px;
         }
-        .modal-header h3 { font-size: 1.2rem; margin: 0; }
+        .modal-header h3 { 
+            font-size: clamp(1rem, 4vw, 1.2rem); 
+            margin: 0; 
+            word-break: break-word;
+        }
         .close-modal {
             background: none;
             border: none;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: #facc15;
             transition: 0.2s;
             line-height: 1;
+            padding: 0 6px;
         }
         .close-modal:hover { transform: rotate(90deg); color: #fff; }
         .video-wrapper {
@@ -282,12 +398,13 @@
             border: none;
         }
         .modal-footer {
-            padding: 15px 20px;
+            padding: 12px 18px;
             background: rgba(0,0,0,0.3);
             color: #cbd5e1;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
-        /* محتوى التفاصيل المبسط */
+
+        /* تفاصيل الكورس المبسطة */
         .details-content {
             padding: 20px;
             line-height: 1.6;
@@ -300,7 +417,7 @@
         .basic-info {
             background: rgba(250,204,21,0.1);
             border-radius: 16px;
-            padding: 10px 15px;
+            padding: 12px 15px;
             margin-top: 12px;
             display: flex;
             flex-wrap: wrap;
@@ -318,14 +435,46 @@
             border-color: rgba(250,204,21,0.2);
             margin: 12px 0;
         }
-        @media (max-width: 480px) {
+        /* تحسين للشاشات الصغيرة جداً داخل المودال */
+        @media (max-width: 550px) {
             .basic-info {
                 flex-direction: column;
                 gap: 8px;
+                align-items: flex-start;
             }
-            .details-modal .modal-container {
-                max-width: 380px;
+            .modal-header {
+                padding: 12px 15px;
             }
+            .details-content {
+                padding: 16px;
+            }
+        }
+        /* تحسين عام للشاشات الأفقية الصغيرة */
+        @media (max-width: 480px) {
+            .button-group {
+                flex-direction: column;
+            }
+            .watch-btn, .details-btn {
+                width: 100%;
+            }
+            .navbar {
+                justify-content: center;
+            }
+            .back-link {
+                margin-right: auto;
+                margin-left: 0;
+            }
+        }
+        /* ضبط العرض في الأجهزة المتوسطة */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .courses-grid {
+                gap: 25px;
+                padding: 0 30px;
+            }
+        }
+        /* منع التمرير الأفقي نهائياً */
+        img, iframe, .lesson-card, .modal-container {
+            max-width: 100%;
         }
     </style>
 </head>
@@ -512,7 +661,6 @@
         const titleElem = document.getElementById('detailsModalTitle');
         const contentDiv = document.getElementById('detailsContent');
         const info = lesson.basicInfo;
-        // إزالة الرموز الإضافية من العنوان إن وجدت
         const cleanTitle = lesson.title.replace(/^[\u0600-\u06FF]+\s/, ''); 
         titleElem.innerText = `📘 ${cleanTitle}`;
         contentDiv.innerHTML = `
@@ -543,12 +691,13 @@
         if (e.target === detailsModal) closeDetailsModal();
     });
 
-    // إضافة زر العودة
+    // إضافة زر العودة إلى شريط التنقل (مع الحفاظ على التجاوب)
     const nav = document.querySelector('.navbar');
     const backLink = document.createElement('a');
     backLink.href = 'courses.html';
     backLink.className = 'back-link';
     backLink.innerHTML = '<i class="fas fa-arrow-right"></i> العودة للكورسات';
+    // ندخله بعد الـ subscription-badge مباشرة لكن الأفضل وضعه في النهاية داخل الـ navbar
     nav.appendChild(backLink);
 
     const isActive = loadSubscription();

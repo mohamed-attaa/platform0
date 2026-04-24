@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>لوحة التحكم الشاملة | منصة تعليمية متكاملة - المرحلة الابتدائية</title>
+    <!-- Tailwind + Fonts + Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { font-family: 'Cairo', sans-serif; }
+        body { background: #f0f2f5; }
+        .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+        .scrollbar-thin::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+        .scrollbar-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; font-weight: 600; }
+        html { scroll-behavior: smooth; }
+        .nav-link-active {
+            background-color: #eff6ff;
+            color: #1e40af;
+            font-weight: 600;
+        }
+        /* استجابة وسائل الإعلام للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            #primarySidebar {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                bottom: 0;
+                width: 280px;
+                z-index: 1000;
+                transition: right 0.3s ease-in-out;
+                display: block !important;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            #primarySidebar.mobile-sidebar-open {
+                right: 0;
+                box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+            }
+            .sidebar-backdrop {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(0,0,0,0.5);
+                z-index: 999;
+                display: none;
+            }
+            .sidebar-backdrop.active {
+                display: block;
+            }
+            .desktop-only-sidebar {
+                display: none !important;
+            }
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+            /* إظهار زر الإغلاق في الموبايل فقط */
+            .sidebar-close-btn {
+                display: flex !important;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none !important;
+            }
+            .sidebar-backdrop {
+                display: none !important;
+            }
+            #primarySidebar {
+                position: relative;
+                right: auto !important;
+                display: flex !important;
+                width: 18rem;
+            }
+            /* إخفاء زر الإغلاق في سطح المكتب */
+            .sidebar-close-btn {
+                display: none !important;
+            }
+        }
+        /* تنسيق drawer للأجهزة المحمولة */
+        #primarySidebar {
+            background: white;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+        .mobile-menu-btn {
+            cursor: pointer;
+        }
+        /* منع التمرير للخلفية عند فتح القائمة */
+        body.menu-open {
+            overflow: hidden;
+        }
+        /* زر الإغلاق داخل السايدبار */
+        .sidebar-close-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4b5563;
+            transition: all 0.2s;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+        .sidebar-close-btn:hover {
+            background-color: #f3f4f6;
+            color: #ef4444;
+        }
+
+        /* تحسين مرونة البطاقات */
+        @media (max-width: 640px) {
+            .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-5 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+            .p-6 {
+                padding: 1rem;
+            }
+            .text-xl {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-[Cairo]">
+
+<div class="flex h-screen overflow-hidden relative">
+    <!-- ========== SIDEBAR الشاملة (مع زر إغلاق مخصص للموبايل) ========== -->
+    <aside id="primarySidebar" class="w-72 bg-white shadow-xl z-10 flex-shrink-0 overflow-y-auto scrollbar-thin flex flex-col">
+        <div class="p-5 border-b flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-graduation-cap text-3xl text-blue-600"></i>
+                <span class="font-bold text-xl text-gray-800">منصة<span class="text-blue-600">تكامل</span></span>
+            </div>
+            <!-- زر إغلاق القائمة للموبايل (علامة X) -->
+            <button id="mobileCloseSidebar" class="sidebar-close-btn" aria-label="إغلاق القائمة">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="p-4 space-y-2">
+            <div class="text-xs text-gray-400 font-semibold mt-2 mb-1"> الرئيسية </div>
+            <a href="#main-dashboard" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-tachometer-alt w-5"></i> لوحة التحكم (شاملة)</a>
+            <a href="#students-progress" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-chalkboard-user w-5"></i> الطلاب / التقدم</a>
+            <a href="#courses-education" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-book-open w-5"></i> الكورسات & التعليم</a>
+            <a href="#error-bank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-chart-line w-5"></i> بنك الأخطاء (Error Bank)</a>
+            <a href="#gamification" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-gamepad w-5"></i> الألعاب والتحديات</a>
+            <a href="#live-system" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-video w-5"></i> المباشر (Live / Zoom)</a>
+            <div class="text-xs text-gray-400 font-semibold mt-4 mb-1"> أدوار متقدمة </div>
+            <a href="#instructor-panel" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-chalkboard w-5"></i> المدرب (إنشاء كورس)</a>
+            <a href="#admin-panel" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-user-shield w-5"></i> المشرف (Admin)</a>
+            <a href="#parent-panel" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-heart w-5"></i> ولي الأمر (Parent)</a>
+            <a href="#payments-section" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-credit-card w-5"></i> المدفوعات / الفواتير</a>
+            <a href="#customization-section" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition nav-link"><i class="fas fa-palette w-5"></i> التخصيص (ألوان/خلفيات)</a>
+        </nav>
+    </aside>
+
+    <!-- خلفية داكنة للموبايل عند فتح القائمة -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="flex-1 overflow-y-auto scrollbar-thin">
+        <!-- Header معدل: إزالة خانة البحث + أيقونة القائمة للموبايل -->
+        <header class="bg-white shadow-sm sticky top-0 z-20 p-4 flex justify-between items-center border-b">
+            <div class="flex items-center gap-3">
+                <!-- أيقونة الهامبرغر للموبايل فقط -->
+                <button id="mobileMenuToggle" class="mobile-menu-btn text-gray-700 text-2xl focus:outline-none ml-2">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <!-- تم إزالة حقل البحث بالكامل كما هو مطلوب -->
+            </div>
+            <div class="flex items-center gap-5">
+                <div class="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full"><i class="fas fa-coins text-amber-500"></i><span class="font-bold text-amber-700">2,450</span><span class="text-xs">نقطة</span></div>
+                <i class="fas fa-bell text-gray-500 text-xl relative"><span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">3</span></i>
+                <a href="#" class="bg-green-500 text-white px-3 py-1.5 rounded-full text-sm flex items-center gap-2"><i class="fab fa-whatsapp"></i> واتساب الدعم</a>
+                <div class="flex items-center gap-2"><img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-9 h-9 rounded-full border-2 border-blue-400"><span class="font-semibold">أحمد ✨</span></div>
+            </div>
+        </header>
+
+        <!-- محتوى اللوحة الشامل: كل الأقسام موجودة بالكامل -->
+        <div class="p-6 space-y-8">
+            <!-- قسم رئيسي (الاحصائيات والبطاقات العلوية) -->
+            <div id="main-dashboard">
+                <!-- بطاقات إحصائيات سريعة -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+                    <div class="bg-white p-4 rounded-2xl shadow flex items-center gap-4"><div class="bg-blue-100 p-3 rounded-full"><i class="fas fa-users text-blue-600 text-xl"></i></div><div><p class="text-gray-500 text-sm">الطلاب النشطاء</p><p class="text-2xl font-bold">1,284</p></div></div>
+                    <div class="bg-white p-4 rounded-2xl shadow"><div class="flex items-center gap-4"><div class="bg-green-100 p-3 rounded-full"><i class="fas fa-chalkboard text-green-600"></i></div><div><p class="text-gray-500">الكورسات</p><p class="text-2xl font-bold">12</p></div></div></div>
+                    <div class="bg-white p-4 rounded-2xl shadow"><div><i class="fas fa-exclamation-triangle text-amber-500"></i><p class="text-gray-500">أخطاء مسجلة</p><p class="text-2xl font-bold">127 <span class="text-sm text-gray-400">(للطلاب)</span></p></div></div>
+                    <div class="bg-white p-4 rounded-2xl shadow"><div><i class="fas fa-trophy text-yellow-500"></i><p class="text-gray-500">تحديات نشطة</p><p class="text-2xl font-bold">8</p></div></div>
+                    <div class="bg-white p-4 rounded-2xl shadow"><div><i class="fas fa-dollar-sign text-green-600"></i><p class="text-gray-500">إيرادات (شهر)</p><p class="text-2xl font-bold">8,200 ج.م</p></div></div>
+                </div>
+            </div>
+
+            <!-- قسم المدفوعات + طلب كورس (Enrollment + Payment) -->
+            <div id="payments-section">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl shadow p-5">
+                        <h2 class="text-xl font-bold mb-3"><i class="fas fa-credit-card text-blue-500 ml-2"></i> المدفوعات & الاشتراك</h2>
+                        <div class="border rounded-lg p-3 mb-3"><div class="flex justify-between"><span>كورس الرياضيات المتكامل (الصف الثالث)</span><span class="font-bold">350 ج.م</span></div><div class="flex gap-3 mt-2"><button class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"><i class="fab fa-vodafone"></i> Vodafone Cash</button><button class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm"><i class="fas fa-barcode"></i> Fawry</button></div><div class="mt-2 flex justify-between items-center"><span class="text-amber-600 text-sm">الحالة: <span class="font-bold">Pending</span></span><button class="bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">تأكيد (Admin manual)</button></div><p class="text-green-600 text-xs mt-1">بعد التأكيد Paid → يتم فتح الكورس فوراً</p></div>
+                        <div class="border-t pt-2 mt-1 text-sm text-gray-500">آخر عملية: نورا أحمد | Vodafone | Paid ✅</div>
+                    </div>
+                    <div id="students-progress" class="bg-white rounded-2xl shadow p-5">
+                        <h2 class="text-xl font-bold mb-2"><i class="fas fa-chart-simple"></i> تقدم الطالب المتطور (Progress + مراجعات)</h2>
+                        <div class="flex items-center gap-3"><div class="w-full bg-gray-200 rounded-full h-3"><div class="bg-blue-600 h-3 rounded-full" style="width: 68%"></div></div><span>68%</span></div>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-center"><div class="bg-gray-50 p-2 rounded"><i class="fas fa-play-circle text-green-500"></i> دروس مكتملة: 5/8 فيديوهات</div><div class="bg-gray-50 p-2 rounded"><i class="fas fa-pen"></i> متوسط التمارين: 82%</div></div>
+                        <div class="mt-3"><div class="bg-yellow-50 p-2 rounded text-sm"><i class="fas fa-graduation-cap"></i> الاختبار النهائي: درجة 85% ✅ Pass</div></div>
+                        <!-- محاكاة كويز سريع مناسب للصف الثالث الابتدائي -->
+                        <div class="mt-3 bg-indigo-50 p-3 rounded-xl"><p class="font-semibold">📝 اختبر نفسك: (12 ÷ 3) + 5 = ؟</p><div class="flex gap-2 mt-2"><button class="bg-white px-3 py-1 rounded quiz-opt" data-correct="false">7</button><button class="bg-white px-3 py-1 rounded quiz-opt" data-correct="false">9</button><button class="bg-green-200 px-3 py-1 rounded quiz-opt" data-correct="true">9 ✅</button><button class="bg-white px-3 py-1 rounded quiz-opt" data-correct="false">4</button></div><span class="text-xs text-gray-500">الدرجة المسجلة: 10/10 | عرض الإجابات الصحيحة والغلط</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بنك الأخطاء (Error Bank) بثلاثة أوضاع -->
+            <div id="error-bank" class="bg-white rounded-2xl shadow p-5">
+                <div class="flex justify-between items-center flex-wrap"><h2 class="text-xl font-bold"><i class="fas fa-database text-red-500"></i> بنك الأخطاء (Error Bank) - ميزة احترافية</h2><div class="flex gap-2"><button class="bg-sky-100 px-3 py-1 rounded-full text-sm" id="studyModeBtn">📖 Study Mode (مراجعة)</button><button class="bg-gray-100 px-3 py-1 rounded-full text-sm" id="testModeBtn">🧪 Test Mode</button><button class="bg-gray-100 px-3 py-1 rounded-full text-sm" id="retryModeBtn">🔄 Retry Mode</button></div></div>
+                <div class="overflow-x-auto mt-3"><table class="min-w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2">السؤال</th><th>إجابة الطالب</th><th>الإجابة الصحيحة</th><th>التاريخ</th><th>وضع المراجعة</th></tr></thead><tbody><tr class="border-b"><td class="p-2">"جمع التكسير لكلمة 'كتاب'؟"</tr><td class="text-red-500">كتابون</td><td class="text-green-600">كُتُب</td><td>2025-04-20</td><td><button class="bg-blue-50 text-blue-600 px-2 py-1 rounded review-lesson-btn">مراجعة الدرس</button></td></tr><tr class="border-b"><td class="p-2">5 × 8 = ؟</td><td class="text-red-500">35</td><td class="text-green-600">40</td><td>2025-04-18</td><td><button class="bg-blue-50 px-2 py-1 rounded retry-error-btn">إعادة المحاولة</button></td></tr><tr class="border-b"><td class="p-2">"ما هو حرف الجر في الجملة: ذهبتُ إلى المدرسة؟"</td><td class="text-red-500">ذهبتُ</td><td class="text-green-600">إلى</td><td>2025-04-17</td><td><button class="bg-blue-50 px-2 py-1 rounded review-rule-btn">مراجعة القاعدة</button></td></tr></tbody>}</div>
+                <div class="mt-2 text-xs text-gray-400">📍 الوضع الحالي: <span id="activeErrorMode" class="font-bold text-blue-600">Study Mode (مراجعة + عرض صح)</span> – يتم تتبع كل الأخطاء وحلها بطريقة تفاعلية.</div>
+            </div>
+
+            <!-- لوحة المدرب : إنشاء كورس -->
+            <div id="instructor-panel" class="bg-white rounded-2xl shadow p-5">
+                <h2 class="text-xl font-bold"><i class="fas fa-chalkboard-user text-purple-600"></i> لوحة المدرب (إنشاء كورس متكامل للمرحلة الابتدائية)</h2>
+                <div class="grid md:grid-cols-2 gap-4 mt-3">
+                    <div><label class="block font-semibold">عنوان الكورس</label><input type="text" placeholder="مثال: الرياضيات للصف الثالث - الفصل الدراسي الأول" class="border rounded-xl w-full p-2"></div>
+                    <div><label>السعر</label><input type="number" placeholder="299 ج.م" class="border rounded-xl w-full p-2"></div>
+                    <div class="col-span-2"><label>رفع فيديو / درس</label><div class="border-dashed border-2 p-3 rounded-xl text-center text-gray-400"><i class="fas fa-cloud-upload-alt"></i> اسحب الفيديو أو اختر ملف (MP4)</div></div>
+                    <div class="col-span-2"><div class="bg-gray-50 p-2 rounded flex flex-wrap justify-between items-center"><span>📁 الوحدة الأولى: الأعداد حتى 1000</span><span>🎥 الدرس 1 (فيديو) <i class="fas fa-trash-alt text-red-400"></i></span><button class="text-blue-500 text-sm">+ إضافة درس/تمرين تفاعلي</button></div></div>
+                    <button class="bg-green-600 text-white py-2 rounded-xl">حفظ الكورس ونشره (انتظار موافقة الأدمن)</button>
+                </div>
+            </div>
+
+            <!-- إدارة الأدمن (قبول/رفض كورسات) -->
+            <div id="admin-panel" class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-2xl shadow p-5"><h2 class="font-bold text-lg"><i class="fas fa-user-check text-indigo-500"></i> إدارة الأدمن | طلبات الموافقة</h2><div class="flex justify-between items-center border-b py-2"><span>كورس: اللغة العربية (النحو للمبتدئين)</span><span class="text-amber-500">Pending</span><button class="bg-green-500 text-white px-3 py-1 rounded">قبول</button><button class="bg-red-500 text-white px-3 rounded">رفض</button></div><div class="flex justify-between pt-2"><span>كورس: الرياضيات - جدول الضرب</span><span class="text-green-600">✅ منشور</span><button class="text-red-500">حذف</button></div></div>
+                <div class="bg-white rounded-2xl shadow p-5"><h2 class="font-bold"><i class="fas fa-star"></i> التقييمات (Reviews) بنجوم وتعليقات</h2><div class="flex items-center gap-2"><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="fas fa-star text-yellow-400"></i><i class="far fa-star"></i><span>4.0</span><p class="text-gray-600 text-sm">"كورس ممتع جداً، ابني استفاد كثيراً" – أم يوسف</p></div><div class="mt-1"><textarea placeholder="أضف تقييمك" class="border rounded w-full p-2"></textarea><button class="bg-blue-500 text-white px-4 py-1 rounded mt-1">إرسال التقييم</button></div></div>
+            </div>
+
+            <!-- لوحة ولي الأمر (Parent Dashboard) -->
+            <div id="parent-panel" class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl shadow p-5">
+                <h2 class="text-xl font-bold flex gap-2"><i class="fas fa-family"></i> لوحة ولي الأمر | أطفالي والتقدم</h2>
+                <div class="flex flex-wrap gap-5 mt-3">
+                    <div class="bg-white p-3 rounded-xl flex-1"><div class="flex items-center gap-3"><img src="https://randomuser.me/api/portraits/boys/10.jpg" class="w-10 rounded-full"><div><p class="font-bold">يوسف (9 سنوات)</p><p>التقدم: 45% | الأخطاء: 8 أخطاء</p><progress class="w-full" value="45" max="100"></progress><button class="text-blue-600 text-sm mt-1">إنشاء اختبار خاص بابني من بنك الأخطاء</button></div></div></div>
+                    <div class="bg-white p-3 rounded-xl flex-1"><div><i class="fas fa-file-alt"></i> اختباراتي المنشأة لابني: اختبار الرياضيات (درجة 85/100) <button class="bg-purple-100 text-purple-700 px-2 rounded">مراجعة النتيجة</button></div><button class="bg-pink-100 text-pink-600 w-full mt-2 py-1 rounded">➕ إنشاء اختبار جديد للطفل (Parent Test)</button></div>
+                </div>
+            </div>
+
+            <!-- التفاعل والذكاء التعليمي + Live Lectures -->
+            <div id="live-system" class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-2xl shadow p-5"><h2 class="font-bold"><i class="fas fa-chalkboard"></i> Live System | محاضرات مباشرة Zoom</h2><div class="flex items-center gap-3 bg-red-50 p-3 rounded"><i class="fas fa-video text-red-500 text-2xl"></i><div><p class="font-semibold">محاضرة مراجعة جدول الضرب – اليوم 7 مساءً</p><button class="bg-blue-500 text-white text-sm px-3 py-1 rounded mt-1">انضمام عبر Zoom</button></div></div><div class="mt-2"><i class="fas fa-door-open"></i> غرف المذاكرة: غرفة الرياضيات (3 طلاب متصلين) - <button class="text-green-600">انضم للغرفة</button></div></div>
+                <div id="gamification" class="bg-white rounded-2xl shadow p-5 relative overflow-hidden"><h2 class="font-bold"><i class="fas fa-gamepad text-2xl text-yellow-500"></i> Gamification (الأطفال) + متجر نقاط</h2><div class="flex flex-wrap justify-between"><div class="bg-gray-100 p-2 rounded"><span class="font-bold">Avatar 👧</span><div class="flex gap-1"><i class="fas fa-user-circle text-3xl text-blue-400"></i><i class="fas fa-user-astronaut text-3xl"></i></div><button class="text-xs bg-blue-500 text-white px-2 rounded">تغيير</button></div><div><span class="font-bold">🏆 لوحة المتصدرين</span><ul class="text-sm"><li>1. محمد - 3400 نقطة</li><li>2. ليلى - 2980 نقطة</li><li>3. يوسف - 2750 نقطة</li></ul></div><div><i class="fas fa-store"></i> متجر: خلفية جديدة بـ 500 نقطة <button class="bg-amber-400 text-white px-2 rounded text-xs">شراء</button></div></div><div class="mt-2 text-center p-2 bg-yellow-100 rounded-lg">🎉 تحدي مباشر: "أسرع إجابة في جمع الأعداد حتى 100" – vs زميلك الآن! <button class="bg-green-500 text-white px-2 rounded">قبول التحدي</button></div></div>
+            </div>
+
+            <!-- إشعارات وترحيب وتنبيهات أداء + تخصيص -->
+            <div id="customization-section" class="bg-white rounded-2xl shadow p-4 flex flex-wrap gap-4 justify-between items-center">
+                <div><i class="fas fa-bell text-blue-500 text-xl"></i> <span class="font-semibold">آخر الإشعارات:</span> 🎉 ترحيب بعودتك! | ✅ أكملت درس "جمع الأعداد" +10 نقاط | ❗ تذكير: مراجعة بنك الأخطاء اليوم | 🎓 نتيجة اختبار النهائي: ناجح</div>
+                <div class="flex gap-2"><i class="fas fa-palette text-purple-600 text-xl"></i><select class="border rounded p-1 text-sm"><option>تخصيص الألوان (فاتح)</option><option>وضع ليلي</option><option>خلفية متحركة</option></select><button class="bg-gray-200 p-1 rounded"><i class="fas fa-volume-up"></i> تشغيل أصوات تشجيع</button></div>
+            </div>
+
+            <!-- رسم بياني للتقدم -->
+            <div id="courses-education" class="bg-white rounded-2xl shadow p-5">
+                <h3 class="font-bold">📊 تقدم الطالب المتطور – مشاهدة الدروس مرتبطة بنتائج التمارين والاختبار النهائي</h3>
+                <canvas id="progressChart" height="100" class="max-h-48 w-full"></canvas>
+                <div class="text-sm text-center mt-2">التقدم العام: 68% | الدروس المكتملة: 12/18 | اجتياز الاختبار النهائي ✅ درجة 85% (Pass)</div>
+            </div>
+
+            <!-- إعلان ختامي شامل -->
+            <div class="text-center bg-gray-800 text-white p-3 rounded-xl text-sm">🚀 منصة شاملة: كورسات (رياضيات، لغة عربية)، فيديوهات، Enrollment، دفع (Vodafone/Fawry)، مدرب، أدمن، Parent Dashboard، Error Bank بأوضاعه، تمارين تفاعلية، Live، Gamification، أفاتار، متجر، تحديات، إشعارات، تخصيص واجهة، واتساب دعم – كل هذا في لوحة واحدة مخصصة للصف الثالث الابتدائي.</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // ========== تفعيل أوضاع بنك الأخطاء ==========
+    const studyBtn = document.getElementById('studyModeBtn');
+    const testBtn = document.getElementById('testModeBtn');
+    const retryBtn = document.getElementById('retryModeBtn');
+    const modeSpan = document.getElementById('activeErrorMode');
+    if(studyBtn) studyBtn.addEventListener('click', () => { modeSpan.innerText = 'Study Mode (مراجعة + عرض الإجابة الصحيحة)'; alert('تم تفعيل وضع الدراسة: تظهر الإجابات الصحيحة لمساعدتك'); });
+    if(testBtn) testBtn.addEventListener('click', () => { modeSpan.innerText = 'Test Mode (اختبار بدون إجابات)'; alert('وضع الاختبار: لن تظهر الإجابات الصحيحة، ركز!'); });
+    if(retryBtn) retryBtn.addEventListener('click', () => { modeSpan.innerText = 'Retry Mode (إعادة حل الأسئلة الخاطئة فقط)'; alert('إعادة المحاولة على الأخطاء المسجلة فقط'); });
+
+    // الرسم البياني
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: { labels: ['أسبوع1','أسبوع2','أسبوع3','أسبوع4','هذا الأسبوع'], datasets: [{ label: 'نسبة التقدم %', data: [20, 45, 55, 62, 78], borderColor: '#3b82f6', tension: 0.3, fill: false }] },
+        options: { responsive: true, maintainAspectRatio: true }
+    });
+
+    // محاكاة أصوات / تفاعل الأداء
+    function playFeedback(isSuccess) { if(isSuccess) alert('🎉 أحسنت! (موسيقى/AI احتفالي)'); else alert('📚 لا تقلق، حاول مجدداً! الأخطاء سُجّلت في بنك الأخطاء 🤗'); }
+    document.querySelectorAll('.quiz-opt').forEach(btn => { 
+        btn.addEventListener('click', (e) => { 
+            const isCorrect = btn.getAttribute('data-correct') === 'true';
+            playFeedback(isCorrect);
+            if(!isCorrect) alert('الإجابة الصحيحة هي 9 لأن (12÷3=4) +5 =9');
+        }); 
+    });
+    document.querySelectorAll('.bg-green-200.quiz-opt').forEach(btn => { btn.addEventListener('click', () => playFeedback(true)); });
+    
+    // ========== نظام القائمة الجانبية المتجاوبة مع أيقونة الموبايل (هامبرغر) وزر إغلاق X ==========
+    const sidebar = document.getElementById('primarySidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const menuToggle = document.getElementById('mobileMenuToggle');
+    const closeSidebarBtn = document.getElementById('mobileCloseSidebar');
+    const bodyEl = document.body;
+    
+    function closeMobileMenu() {
+        if(sidebar) sidebar.classList.remove('mobile-sidebar-open');
+        if(backdrop) backdrop.classList.remove('active');
+        bodyEl.classList.remove('menu-open');
+    }
+    
+    function openMobileMenu() {
+        if(sidebar) sidebar.classList.add('mobile-sidebar-open');
+        if(backdrop) backdrop.classList.add('active');
+        bodyEl.classList.add('menu-open');
+    }
+    
+    if(menuToggle) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if(sidebar.classList.contains('mobile-sidebar-open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        });
+    }
+    
+    // زر الإغلاق (X) الموجود داخل السايدبار
+    if(closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeMobileMenu();
+        });
+    }
+    
+    if(backdrop) {
+        backdrop.addEventListener('click', () => {
+            closeMobileMenu();
+        });
+    }
+    
+    // إغلاق القائمة عند النقر على أي رابط داخل السايد بار (لتحسين تجربة الموبايل)
+    const allSidebarLinks = document.querySelectorAll('#primarySidebar .nav-link');
+    allSidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if(window.innerWidth <= 768) {
+                closeMobileMenu();
+            }
+        });
+    });
+    
+    // تنشيط الرابط الحالي وتمرير سلس
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            navLinks.forEach(l => l.classList.remove('nav-link-active'));
+            this.classList.add('nav-link-active');
+            if(window.innerWidth <= 768) closeMobileMenu();
+        });
+    });
+    
+    // عند تغيير حجم النافذة إلى أكبر من 768 نضمن إزالة الوضع المفتوح وازالة الخلفية
+    window.addEventListener('resize', function() {
+        if(window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+    
+    // إضافة تفاعل للأزرار الاخرى في بنك الأخطاء
+    document.querySelectorAll('.review-lesson-btn, .retry-error-btn, .review-rule-btn').forEach(btn => {
+        btn.addEventListener('click', () => alert('📘 تم فتح مراجعة الدرس المستهدف: يُمكن مراجعة الخطأ وتصحيحه بشكل تفاعلي.'));
+    });
+    
+    console.log("تم تحميل اللوحة الجديدة بالكامل - متجاوبة مع قائمة جانبية متحركة وزر إغلاق X مخصص");
+</script>
+</body>
+</html>

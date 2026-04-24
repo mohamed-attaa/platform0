@@ -440,6 +440,36 @@
         .footer-col h4 { color: #facc15; margin-bottom: 10px; font-size: 1rem; }
         .footer-social a { color: #facc15; font-size: 1.4rem; margin-left: 12px; transition: 0.3s; display: inline-block; }
         .footer-social a:hover { transform: translateY(-4px); color: white; }
+        .newsletter-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .newsletter-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: none;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            min-width: 150px;
+        }
+        .newsletter-box button {
+            background: #facc15;
+            border-radius: 40px;
+            padding: 8px 16px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: 0.3s;
+        }
+        .newsletter-box button:hover {
+            background: #ffdf5e;
+            transform: translateY(-2px);
+        }
         .whatsapp-float {
             position: fixed;
             bottom: 20px;
@@ -479,7 +509,7 @@
         .scroll-top.show { opacity: 1; }
         .scroll-top:hover { transform: translateY(-4px); background: #ffdf5e; }
 
-        /* ========== تحسينات التجاوب لجميع الأجهزة ========== */
+        /* ========== تحسينات التجاوب ========== */
         @media (max-width: 768px) {
             .menu-icon {
                 display: flex;
@@ -536,6 +566,7 @@
             }
             .hero-animated-icons i { display: none; }
             .hero-animated-icons i:nth-child(1), .hero-animated-icons i:nth-child(3) { display: block; font-size: 1.8rem; }
+            .newsletter-box { flex-direction: column; align-items: stretch; }
         }
         @media (max-width: 480px) {
             .math-hero h1 { font-size: 1.3rem; }
@@ -587,11 +618,12 @@
         <i class="fas fa-bars"></i>
     </div>
     <div class="nav-links" id="navLinks">
-        <a href="#"><i class="fas fa-home"></i> الرئيسية</a>
-        <a href="#" class="active"><i class="fas fa-book"></i> الكورسات</a>
-        <a href="#"><i class="fas fa-sign-in-alt"></i> دخول</a>
-        <a href="#"><i class="fas fa-user-plus"></i> تسجيل</a>
-    </div>
+        <a href="./index.html"><i class="fas fa-home"></i> الرئيسية</a>
+        <a href="./courses.html" class="active"><i class="fas fa-book"></i> الكورسات</a>
+        <a href="./login.html"><i class="fas fa-sign-in-alt"></i> دخول</a>
+        <a href="./register.html"><i class="fas fa-user-plus"></i> تسجيل</a>
+    <a href="./dashboard-admin.html" id="dashboardLink" style="display:none;"><i class="fas fa-gauge"></i> لوحة التحكم</a>
+            <div id="authArea"></div>
 </nav>
 
 <section class="math-hero">
@@ -638,6 +670,7 @@
                 <a href="#"><i class="fab fa-twitter"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
+            <p style="margin-top:10px;"><i class="fas fa-envelope"></i> <strong>للتواصل: </strong><a href="mailto:Corexion.academy@gmail.com" style="color:#facc15; text-decoration:none;">Corexion.academy@gmail.com</a></p>
         </div>
         <div class="footer-col">
             <h4>روابط سريعة</h4>
@@ -649,8 +682,11 @@
         </div>
         <div class="footer-col">
             <h4>النشرة البريدية</h4>
-            <input type="email" placeholder="بريدك الإلكتروني" style="padding:8px; border-radius:40px; border:none; width:70%;">
-            <button style="background:#facc15; border-radius:40px; padding:6px 12px; border:none; font-weight:bold;">إرسال</button>
+            <div class="newsletter-box">
+                <input type="email" id="newsletterEmail" placeholder="بريدك الإلكتروني">
+                <button id="newsletterSubmitBtn"><i class="fas fa-paper-plane"></i> إرسال</button>
+            </div>
+            <p style="font-size:0.7rem; margin-top:8px;">اشترك لتصلك أحدث الكورسات والعروض</p>
         </div>
     </div>
     <div class="footer-bottom"><p>© 2025 منصة تعليم ذكية - جميع الحقوق محفوظة</p></div>
@@ -667,7 +703,6 @@
         { id: 4, title: "📐 الأشكال الهندسية", category: "هندسة", image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=500&h=170&fit=crop", description: "التعرف على المربع، المستطيل، المثلث، وخصائص كل شكل مع أنشطة تلوين وتمييز.", lessons: ["المربع وخصائصه", "المستطيل", "المثلث", "تمييز الأشكال", "رسم وتلوين"], price: "199 ج.م", badge: "مرئي", fullDesc: "سيتعرف الطالب على الأشكال الهندسية الأساسية، وخصائص كل شكل من حيث عدد الأضلاع والزوايا. يتضمن أنشطة تلوين وتصنيف ممتعة." }
     ];
 
-    // حفظ البيانات في localStorage لاستخدامها في صفحة watch-courses.html
     localStorage.setItem('mathCoursesData', JSON.stringify(skillsData));
 
     function renderSkills(filterText = "", filterCategory = "all") {
@@ -694,7 +729,6 @@
             </div>
         `).join('');
         
-        // زر "محتوى الكورس": توجيه إلى watch-courses.html مع معرف الكورس
         document.querySelectorAll('.course-content-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -712,6 +746,26 @@
         document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
     }
 
+    // وظيفة إرسال النشرة البريدية
+    function handleNewsletterSubmit() {
+        const emailInput = document.getElementById('newsletterEmail');
+        const email = emailInput.value.trim();
+        if (!email) {
+            alert('الرجاء إدخال بريدك الإلكتروني');
+            return;
+        }
+        // تحقق بسيط من صيغة البريد
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('يرجى إدخال بريد إلكتروني صحيح (مثل name@example.com)');
+            return;
+        }
+        // فتح عميل البريد الإلكتروني مع تعبئة البيانات
+        const mailtoLink = `mailto:Corexion.academy@gmail.com?subject=اشتراك%20في%20النشرة%20البريدية&body=الرجاء%20إضافة%20البريد%20الإلكتروني%20التالي%20لقائمة%20المراسلة:%0A${encodeURIComponent(email)}`;
+        window.location.href = mailtoLink;
+        alert(`تم فتح بريدك الإلكتروني. سيتم إرسال طلب الاشتراك إلى الدعم. شكراً لك ${email}!`);
+        emailInput.value = '';
+    }
+
     const searchInput = document.getElementById('searchInput'), searchBtn = document.getElementById('searchBtn'), categoryFilter = document.getElementById('categoryFilter');
     function applyFilters() { renderSkills(searchInput.value.trim(), categoryFilter.value); }
     searchBtn.addEventListener('click', applyFilters);
@@ -724,12 +778,71 @@
     document.addEventListener('click', (event) => { if (!navLinks.contains(event.target) && !menuIcon.contains(event.target) && navLinks.classList.contains('active')) navLinks.classList.remove('active'); });
 
     const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('revealed'); }); }, { threshold: 0.2 });
-    document.getElementById('whatsappBtn').onclick = () => window.open('https://wa.me/201234567890?text=مرحباً أرغب في الاستفسار عن كورسات الرياضيات', '_blank');
+    
+    // تحديث رقم الواتساب: 01557854833 -> 201557854833 (بدون الصفر الأول ومفتاح مصر)
+    document.getElementById('whatsappBtn').onclick = () => window.open('https://wa.me/201557854833?text=مرحباً أرغب في الاستفسار عن كورسات الرياضيات', '_blank');
+    
+    // زر إرسال النشرة البريدية
+    const newsletterBtn = document.getElementById('newsletterSubmitBtn');
+    if (newsletterBtn) newsletterBtn.addEventListener('click', handleNewsletterSubmit);
+    
     const scrollBtn = document.getElementById('scrollTop');
     window.addEventListener('scroll', () => { scrollBtn.classList.toggle('show', window.scrollY > 400); });
     scrollBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
     
     renderSkills();
+
+
+
+
+
+
+
+
+function renderNavbarAuth() {
+    const authArea = document.getElementById('authArea');
+    const dashboardLink = document.getElementById('dashboardLink');
+
+    const user = JSON.parse(localStorage.getItem('currentLoggedUser'));
+
+    if (user) {
+        authArea.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span style="color:#facc15;font-weight:700;">👋 ${user.fullName}</span>
+                <button onclick="logout()" style="padding:6px 12px;border:none;border-radius:10px;background:#ef4444;color:#fff;cursor:pointer;font-weight:600;">
+                    تسجيل خروج
+                </button>
+            </div>
+        `;
+
+        if (dashboardLink) {
+            dashboardLink.style.display = "flex";
+        }
+
+    } else {
+        authArea.innerHTML = '';
+
+        if (dashboardLink) {
+            dashboardLink.style.display = "none";
+        }
+    }
+}
+
+function logout() {
+    localStorage.removeItem('currentLoggedUser');
+    window.location.href = "index.html";
+}
+
+renderNavbarAuth();
+
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
