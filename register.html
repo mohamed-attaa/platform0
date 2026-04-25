@@ -119,8 +119,7 @@
       z-index: 1;
     }
 
-    .input,
-    .select-role {
+    .input, .select-role {
       width: 100%;
       padding: 14px 45px 14px 18px;
       font-size: 1rem;
@@ -144,8 +143,15 @@
       background-size: 16px;
     }
 
-    .input:focus,
-    .select-role:focus {
+    /* تحريك نص الخيارات (طالب، معلم، ولي أمر) قليلاً لليسار */
+    .select-role option {
+      padding: 8px 25px 8px 10px;
+      background: #0f1a2e;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .input:focus, .select-role:focus {
       border-color: #facc15;
       background: rgba(10, 20, 35, 0.95);
       box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
@@ -281,98 +287,40 @@
       border-bottom-color: #facc15;
     }
 
+    /* responsive */
     @media (max-width: 640px) {
-      .glass-card {
-        padding: 1.5rem 1.2rem;
-        max-width: 95%;
-      }
-      h2 {
-        font-size: 1.6rem;
-        gap: 8px;
-      }
-      h2 i {
-        font-size: 1.7rem;
-      }
-      .input, .select-role {
-        padding: 12px 40px 12px 14px;
-        font-size: 0.95rem;
-      }
-      .btn-glow {
-        padding: 12px;
-        font-size: 1rem;
-      }
-      .sub {
-        font-size: 0.8rem;
-        margin-bottom: 1.4rem;
-      }
+      .glass-card { padding: 1.5rem 1.2rem; max-width: 95%; }
+      h2 { font-size: 1.6rem; gap: 8px; }
+      h2 i { font-size: 1.7rem; }
+      .input, .select-role { padding: 12px 40px 12px 14px; font-size: 0.95rem; }
+      .btn-glow { padding: 12px; font-size: 1rem; }
+      .sub { font-size: 0.8rem; margin-bottom: 1.4rem; }
     }
 
     @media (max-width: 480px) {
-      body {
-        padding: 0.75rem;
-      }
-      .glass-card {
-        padding: 1.2rem 1rem;
-        border-radius: 1.5rem;
-      }
-      h2 {
-        font-size: 1.4rem;
-      }
-      h2 i {
-        font-size: 1.5rem;
-      }
-      .input-group i {
-        right: 12px;
-        font-size: 0.95rem;
-      }
-      .input, .select-role {
-        padding: 10px 38px 10px 12px;
-        font-size: 0.9rem;
-        border-radius: 1rem;
-      }
-      .select-role {
-        background-position: left 12px center;
-        background-size: 14px;
-      }
-      .btn-glow {
-        padding: 10px;
-        font-size: 0.95rem;
-        gap: 6px;
-      }
-      .dynamic-card label {
-        font-size: 0.75rem;
-      }
-      .msg-area {
-        font-size: 0.8rem;
-      }
-      .link {
-        font-size: 0.75rem;
-        margin-top: 18px;
-      }
+      body { padding: 0.75rem; }
+      .glass-card { padding: 1.2rem 1rem; border-radius: 1.5rem; }
+      h2 { font-size: 1.4rem; }
+      h2 i { font-size: 1.5rem; }
+      .input-group i { right: 12px; font-size: 0.95rem; }
+      .input, .select-role { padding: 10px 38px 10px 12px; font-size: 0.9rem; border-radius: 1rem; }
+      .select-role { background-position: left 12px center; background-size: 14px; }
+      .btn-glow { padding: 10px; font-size: 0.95rem; gap: 6px; }
+      .dynamic-card label { font-size: 0.75rem; }
+      .msg-area { font-size: 0.8rem; }
+      .link { font-size: 0.75rem; margin-top: 18px; }
     }
 
     @media (max-width: 360px) {
-      .glass-card {
-        padding: 1rem 0.9rem;
-      }
-      h2 {
-        font-size: 1.25rem;
-      }
-      .input, .select-role {
-        padding: 9px 35px 9px 10px;
-      }
+      .glass-card { padding: 1rem 0.9rem; }
+      h2 { font-size: 1.25rem; }
+      .input, .select-role { padding: 9px 35px 9px 10px; }
     }
 
     @media (max-height: 600px) and (orientation: landscape) {
-      body {
-        padding: 0.5rem;
-      }
-      .glass-card {
-        padding: 1rem 1.2rem;
-      }
-      .input-group {
-        margin-bottom: 0.8rem;
-      }
+      body { padding: 0.5rem; }
+      .glass-card { padding: 1rem 1.2rem; }
+      .input-group { margin-bottom: 0.8rem; }
     }
   </style>
 </head>
@@ -388,9 +336,10 @@
   <div class="input-group">
     <i class="fas fa-user-tag"></i>
     <select id="roleSelect" class="select-role">
-      <option value="student">🧑‍🎓 طالب / طالبة</option>
-      <option value="instructor">🧑‍🏫 مدرس / معلم</option>
-      <option value="parent">👪 ولي أمر</option>
+      <!-- تم إضافة مسافات مناسبة بين الأيقونة والنص لتحريك كلمة "طالب" قليلاً لليسار -->
+      <option value="student">  طالب</option>
+      <option value="instructor">  معلم</option>
+      <option value="parent">  ولي أمر</option>
     </select>
   </div>
 
@@ -398,10 +347,12 @@
     <i class="fas fa-user"></i>
     <input type="text" id="fullName" class="input" placeholder="الاسم الكامل" autocomplete="off">
   </div>
+
   <div class="input-group">
     <i class="fas fa-envelope"></i>
     <input type="text" id="contactField" class="input" placeholder="البريد الإلكتروني أو رقم الهاتف" autocomplete="off">
   </div>
+
   <div class="input-group">
     <i class="fas fa-lock"></i>
     <input type="password" id="password" class="input" placeholder="كلمة المرور (6 أحرف على الأقل)" autocomplete="off">
@@ -412,14 +363,14 @@
   <button class="btn-glow" id="registerBtn">
     <i class="fas fa-arrow-left"></i> إنشاء الحساب <i class="fas fa-sparkles"></i>
   </button>
+
   <div class="loader-modern" id="loaderModern">
     <span></span><span></span><span></span>
     <span style="color:#facc15; margin-right:6px;">جاري التسجيل...</span>
   </div>
   <div class="msg-area" id="msg"></div>
   <div class="link">
-    <i class="fas fa-sign-in-alt"></i> لديك حساب بالفعل؟
-    <a href="login.html">تسجيل الدخول</a>
+    <i class="fas fa-sign-in-alt"></i> لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
   </div>
 </div>
 
@@ -435,7 +386,7 @@
     const msgDiv = document.getElementById('msg');
     const registerBtn = document.getElementById('registerBtn');
 
-    // Helper functions
+    // helpers
     const normalizeContact = (contact) => contact.trim().toLowerCase();
 
     function isContactExists(contactValue) {
@@ -455,8 +406,6 @@
       msgDiv.style.background = isError ? 'rgba(255, 100, 70, 0.12)' : 'rgba(100, 255, 140, 0.12)';
       msgDiv.style.border = isError ? '1px solid rgba(255,180,70,0.3)' : '1px solid rgba(100,255,140,0.3)';
       msgDiv.style.display = 'block';
-      
-      // Auto clear error messages after 4 seconds (but keep success until redirect)
       if (isError) {
         setTimeout(() => {
           if (msgDiv.innerHTML.includes(text)) {
@@ -476,16 +425,17 @@
       msgDiv.style.display = 'block';
     }
 
+    // دالة إنشاء الحقول الديناميكية (تم إضافة حقل رقم الهاتف لولي الأمر)
     function updateDynamicFields() {
       const role = roleSelect.value;
 
-      // Update contact placeholder
+      // تغيير placeholder حقل التواصل الرئيسي
       if (role === 'instructor') {
         contactInput.placeholder = "📧 البريد الإلكتروني (مثال: professor@school.com)";
       } else if (role === 'student') {
         contactInput.placeholder = "📱 البريد الإلكتروني أو رقم الهاتف";
       } else {
-        contactInput.placeholder = "📞 البريد الإلكتروني أو رقم الهاتف";
+        contactInput.placeholder = "📧 البريد الإلكتروني أو رقم الهاتف (للتواصل)";
       }
 
       let extraHtml = '';
@@ -510,12 +460,18 @@
           </div>
         `;
       } else if (role === 'parent') {
+        // إضافة حقلين لولي الأمر: اسم الطالب + رقم هاتف ولي الأمر مع أيقونات مناسبة
         extraHtml = `
           <div class="dynamic-card">
             <label><i class="fas fa-child"></i> اسم الطالب المرتبط به (الابن / الابنة)</label>
-            <div class="input-group" style="margin-bottom:0;">
+            <div class="input-group" style="margin-bottom:0.8rem;">
               <i class="fas fa-user-graduate"></i>
               <input type="text" id="studentNameField" class="input" placeholder="أدخل اسم الطالب كاملاً" autocomplete="off">
+            </div>
+            <label><i class="fas fa-phone-alt"></i> رقم هاتف ولي الأمر</label>
+            <div class="input-group" style="margin-bottom:0;">
+              <i class="fas fa-mobile-alt"></i>
+              <input type="tel" id="parentPhoneField" class="input" placeholder="مثال: 05xxxxxxxx أو 9665xxxxxxxx" autocomplete="off">
             </div>
           </div>
         `;
@@ -523,6 +479,7 @@
       extraContainer.innerHTML = extraHtml;
     }
 
+    // التحقق من الحقول الإضافية حسب الدور (لولي الأمر يتحقق من وجود رقم الهاتف أيضاً)
     function validateRoleFields(role) {
       if (role === 'student') {
         const gradeElem = document.getElementById('gradeField');
@@ -540,14 +497,22 @@
       } 
       else if (role === 'parent') {
         const studentElem = document.getElementById('studentNameField');
-        if (!studentElem) return { valid: false, error: 'حدث خطأ تقني' };
+        const phoneElem = document.getElementById('parentPhoneField');
+        if (!studentElem || !phoneElem) return { valid: false, error: 'حدث خطأ تقني، أعد تحميل الصفحة' };
         const studentValue = studentElem.value.trim();
+        const phoneValue = phoneElem.value.trim();
         if (!studentValue) return { valid: false, error: '❌ الرجاء إدخال اسم الطالب المرتبط بولي الأمر' };
-        return { valid: true, data: { linkedStudent: studentValue } };
+        if (!phoneValue) return { valid: false, error: '❌ الرجاء إدخال رقم هاتف ولي الأمر' };
+        const phoneRegex = /^[0-9+\-() ]{9,}$/;
+        if (!phoneRegex.test(phoneValue)) {
+          return { valid: false, error: '⚠️ يرجى إدخال رقم هاتف صالح (على الأقل 9 أرقام)' };
+        }
+        return { valid: true, data: { linkedStudent: studentValue, parentPhone: phoneValue } };
       }
       return { valid: true, data: {} };
     }
 
+    // التحقق من صحة وسيلة التواصل حسب الدور (للمعلم بريد إلكتروني إلزامي)
     function isValidContactForRole(contact, role) {
       if (!contact) return false;
       if (role === 'instructor') {
@@ -559,24 +524,19 @@
 
     function registerUser() {
       clearMessage();
-      
       const fullName = fullNameInput.value.trim();
       const contact = contactInput.value.trim();
       const password = passwordInput.value;
       const role = roleSelect.value;
 
-      // Basic validation
       if (!fullName || !contact || !password) {
         showMessage("❌ جميع الحقول الأساسية مطلوبة (الاسم، البريد/الهاتف، كلمة المرور)");
         return;
       }
-      
       if (password.length < 6) {
         showMessage("❌ كلمة المرور يجب أن تتكون من 6 أحرف أو أكثر");
         return;
       }
-
-      // Role-specific contact validation
       if (!isValidContactForRole(contact, role)) {
         if (role === 'instructor') {
           showMessage("📧 يرجى إدخال بريد إلكتروني صحيح للمدرس (مثل: name@example.com)");
@@ -585,14 +545,11 @@
         }
         return;
       }
-
-      // Check uniqueness
       if (isContactExists(contact)) {
         showMessage("⚠️ هذا البريد أو رقم الهاتف مسجل بالفعل. الرجاء تسجيل الدخول.");
         return;
       }
 
-      // Validate dynamic fields
       const roleValidation = validateRoleFields(role);
       if (!roleValidation.valid) {
         showMessage(roleValidation.error);
@@ -600,14 +557,12 @@
       }
       const extraData = roleValidation.data || {};
 
-      // Start loading
       loaderDiv.style.display = 'flex';
       registerBtn.disabled = true;
       registerBtn.style.opacity = '0.7';
 
       setTimeout(() => {
         try {
-          // Create user object
           const newUser = {
             id: Date.now(),
             fullName: fullName,
@@ -618,12 +573,10 @@
             createdAt: new Date().toISOString()
           };
 
-          // Save to localStorage
           let allUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
           allUsers.push(newUser);
           localStorage.setItem('registeredUsers', JSON.stringify(allUsers));
 
-          // Set session
           const sessionUser = {
             id: newUser.id,
             fullName: newUser.fullName,
@@ -636,17 +589,11 @@
 
           loaderDiv.style.display = 'none';
           showMessage("✅ تم إنشاء الحساب بنجاح! جاري توجيهك إلى المنصة الرئيسية...", false);
-
-          // Change button text temporarily
-          const originalBtnText = registerBtn.innerHTML;
           registerBtn.innerHTML = '<i class="fas fa-check-circle"></i> تم التسجيل! مرحباً بك';
-          
-          // Redirect to index.html
+
           setTimeout(() => {
-            // Check if index.html exists (optional: try to fetch, but we just redirect)
             window.location.href = "./index.html";
           }, 1500);
-          
         } catch(error) {
           console.error("Registration error:", error);
           loaderDiv.style.display = 'none';
@@ -657,7 +604,7 @@
       }, 1200);
     }
 
-    // Event listeners
+    // الأحداث
     roleSelect.addEventListener('change', () => {
       updateDynamicFields();
       clearMessage();
@@ -668,7 +615,6 @@
       registerUser();
     });
 
-    // Clear message when typing
     const mainInputs = [fullNameInput, contactInput, passwordInput];
     mainInputs.forEach(inp => {
       inp.addEventListener('input', () => clearMessage());
@@ -678,10 +624,8 @@
       if (e.target.tagName === 'INPUT') clearMessage();
     });
 
-    // Initial render
     updateDynamicFields();
 
-    // Handle any leftover loading state
     window.addEventListener('load', () => {
       if (loaderDiv) loaderDiv.style.display = 'none';
       registerBtn.disabled = false;
